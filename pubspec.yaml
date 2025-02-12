@@ -1,0 +1,15 @@
+name: modulisto_workspace
+publish_to: none
+environment:
+  sdk: ^3.6.0
+workspace:
+  - example
+  - packages/modulisto
+  - packages/modulisto_flutter
+
+dependencies:
+  meta: ^1.15.0
+
+dev_dependencies:
+  test: ^1.24.0
+  fake_async: ^1.3.1

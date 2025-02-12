@@ -1,0 +1,33 @@
+name: modulisto
+description: An advanced state management solution with any number of event flows
+version: 1.0.0
+resolution: workspace
+homepage: https://github.com/kitsuniru/modulisto
+repository: https://github.com/kitsuniru/modulisto
+issue_tracker: https://github.com/kitsuniru/modulisto/issues
+
+topics:
+  - architecture
+  - state-management
+  - state
+  - concurrency
+  - controller
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  meta: ^1.15.0
+  stream_transform: ^2.1.1
+
+dev_dependencies:
+  test: ^1.24.0
+  fake_async: ^1.3.1

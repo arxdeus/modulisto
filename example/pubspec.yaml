@@ -1,0 +1,11 @@
+name: example
+version: 1.0.0
+resolution: workspace
+publish_to: none
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  modulisto: ^1.0.0
+
