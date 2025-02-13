@@ -1,3 +1,7 @@
+## 1.0.2
+
+* docs: fullpledged `README.md`
+
 ## 1.0.1
 
 * feat: `PipelineContext` can `.update` any `Updatable<T>` interface implementation
