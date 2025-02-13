@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:modulisto/modulisto.dart';
 
 final class TestModule extends Module {
@@ -16,9 +14,9 @@ final class TestModule extends Module {
     this,
     debugName: 'counterPipeline',
     ($) => $
-      ..bind(increment, _changeValue(() => state.value + 1, state))
-      ..bind(decrement, _changeValue(() => state.value - 1, state))
-      ..bind(reset, _changeValue(() => 0, state)),
+      ..bind(increment, (context, _) => context.update(state, state.value + 1))
+      ..bind(decrement, (context, _) => context.update(state, state.value - 1))
+      ..bind(reset, (context, _) => context.update(state, 0)),
     transformer: eventTransformers.sequental,
   );
 
@@ -27,14 +25,6 @@ final class TestModule extends Module {
     this,
     ($) => $..redirect(state, print),
   );
-
-  Future<void> Function(PipelineContext, Object? _) _changeValue(int Function() mutator, Store<int> state) =>
-      (context, _) async {
-        await Future<void>.delayed(const Duration(milliseconds: 350));
-        if (context.isClosed) return;
-
-        context.update(state, mutator());
-      };
 
   TestModule() {
     Module.initialize(
