@@ -1,6 +1,5 @@
 ## 1.0.0
 
-* feat: `Trigger<T>` as executive `Unit`
-* feat: `Store<T>` as storage `Unit`
-* feat: `Pipeline` as flow handler (both `.async` and `.sync`)
-* feat: `ModuleLifecycle` that allows you to react on module lifecycle updates
+* feat: `ModuleScope` that works like `Provider` but especially for `Module`
+* feat: `ListenableAdapter` - adapts any `Notifiable` unit to default `Listenable` interface
+* feat: `StoreBuilder<T>` - listen for store updates and rebuilds on it
