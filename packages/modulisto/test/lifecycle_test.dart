@@ -22,7 +22,7 @@ void main() {
       ($) => $
         ..bind(
           pullToggle,
-          (context, value) => context.updateStore(someCoolToggle, value),
+          (context, value) => context.update(someCoolToggle, value),
         ),
     );
 

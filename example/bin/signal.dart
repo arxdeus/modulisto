@@ -11,7 +11,7 @@ final class SignalModule extends Module {
       ..bind(
         trigger,
         (context, ({int test}) value) {
-          context.updateStore(store, value.test);
+          context.update(store, value.test);
         },
       ),
   );

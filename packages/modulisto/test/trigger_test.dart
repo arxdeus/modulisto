@@ -15,7 +15,7 @@ void main() {
       void markAsDone(PipelineContext context, int markValue) {
         final oldValue = marker.value;
         final newValue = oldValue + 1;
-        context.updateStore(marker, newValue);
+        context.update(marker, newValue);
         expect(marker.value, newValue);
 
         if (marker.value > 3) {

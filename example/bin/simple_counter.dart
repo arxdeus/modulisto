@@ -33,7 +33,7 @@ final class TestModule extends Module {
         await Future<void>.delayed(const Duration(milliseconds: 350));
         if (context.isClosed) return;
 
-        context.updateStore(state, mutator());
+        context.update(state, mutator());
       };
 
   TestModule() {

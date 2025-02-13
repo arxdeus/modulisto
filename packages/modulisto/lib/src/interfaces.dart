@@ -14,6 +14,20 @@ abstract class ModuleChild {
   ModuleRunner get module;
 }
 
+abstract class Updatable<T> {
+  void update(T update);
+}
+
+abstract class Attachable {
+  @internal
+  @protected
+  void attachToModule(ModuleRunner module);
+}
+
+abstract class Named {
+  String? get debugName;
+}
+
 @internal
 @protected
 abstract final class ModuleRunner {
@@ -61,17 +75,7 @@ typedef ModuleLifecycle = ({
 @internal
 typedef RawUnit = Unit<Object?>;
 
-abstract class Attachable {
-  @internal
-  @protected
-  void attachToModule(ModuleRunner module);
-}
-
-abstract class Named {
-  String? get debugName;
-}
-
-abstract base class Unit<T> extends Stream<T> implements Named, ModuleChild, Notifiable<T>, Disposable {
+abstract interface class Unit<T> extends Stream<T> implements Named, ModuleChild, Notifiable<T>, Disposable {
   @override
   @internal
   @protected
@@ -85,6 +89,10 @@ abstract base class Unit<T> extends Stream<T> implements Named, ModuleChild, Not
   /// [last] may cause infinite awaiting for value
   Future<T> get last => super.last;
   // coverage:ignore-end
+}
+
+abstract class ValueUnit<T> implements Unit<T> {
+  T get value;
 }
 
 abstract interface class UnitHost {
@@ -108,6 +116,8 @@ abstract interface class SyncPipelineRef {
 
 abstract interface class PipelineContext {
   bool get isClosed;
+
+  void update<T>(Updatable<T> updatable, T value);
 }
 
 typedef EventMapper<Event> = Stream<Event> Function(Event value);

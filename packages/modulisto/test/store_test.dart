@@ -21,11 +21,11 @@ void main() {
         ($) => $
           ..bind(
             trigger,
-            (context, value) => context.updateStore(state, value),
+            (context, value) => context.update(state, value),
           )
           ..bind(
             state,
-            (context, value) => context.updateStore(linkedState, value.toString()),
+            (context, value) => context.update(linkedState, value.toString()),
           ),
       );
 

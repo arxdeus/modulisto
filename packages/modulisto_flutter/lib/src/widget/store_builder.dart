@@ -14,7 +14,7 @@ class StoreBuilder<T> extends StatefulWidget {
     super.key, // ignore: unused_element
   });
 
-  final Store<T> store;
+  final ValueUnit<T> store;
   final ValueWidgetBuilder<T> builder;
 
   /// The widget below this widget in the tree.

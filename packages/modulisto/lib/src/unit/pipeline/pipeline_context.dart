@@ -16,4 +16,7 @@ final class PipelineContextWithDeadline implements PipelineContext, Disposable {
     if (contextDeadline.isCompleted) return;
     contextDeadline.complete();
   }
+
+  @override
+  void update<T>(Updatable<T> updatable, T value) => updatable.update(value);
 }

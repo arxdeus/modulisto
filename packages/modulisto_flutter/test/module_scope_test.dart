@@ -13,7 +13,7 @@ base class DummyWithStore extends DummyModule {
     ($) => $..bind(trigger, _updateState),
   );
 
-  void _updateState(PipelineContext context, int value) => context.updateStore(state, value);
+  void _updateState(PipelineContext context, int value) => context.update(state, value);
 
   DummyWithStore() {
     Module.initialize(
