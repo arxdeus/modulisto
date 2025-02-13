@@ -1,7 +1,8 @@
 # https://dart.dev/guides/libraries/private-files
 # Created by `dart pub`
 .dart_tool/
-
+.vscode
+.idea
 # FVM Version Cache
 .fvm/
 # See https://www.dartlang.org/guides/libraries/private-files
