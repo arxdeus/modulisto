@@ -1,3 +1,7 @@
+## 1.0.1
+
+* feat: `StoreBuilder<T>` accepts any `ValueUnit<T>`, not only `Store<T>`
+
 ## 1.0.0
 
 * feat: `ModuleScope` that works like `Provider` but especially for `Module`

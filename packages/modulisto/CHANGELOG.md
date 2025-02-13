@@ -1,3 +1,7 @@
+## 1.0.1
+
+* feat: `PipelineContext` can `.update` any `Updatable<T>` interface implementation
+
 ## 1.0.0
 
 * feat: `Trigger<T>` as executive `Unit`
