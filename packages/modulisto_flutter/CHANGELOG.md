@@ -1,3 +1,7 @@
+## 1.0.2
+
+* chore: bump `modulisto` up to 1.0.2
+
 ## 1.0.1
 
 * feat: `StoreBuilder<T>` accepts any `ValueUnit<T>`, not only `Store<T>`
