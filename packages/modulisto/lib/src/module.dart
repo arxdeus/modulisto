@@ -5,8 +5,13 @@ import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
 abstract base class Module extends ModuleBase implements Disposable, Named {
-  static void initialize(Module module, void Function(ModuleBase ref) initializer) {
-    initializer(module);
+  static void initialize(
+    Module module, {
+    required Set<Attachable> attach,
+  }) {
+    for (final attachable in attach) {
+      attachable.attachToModule(module);
+    }
     module._lifecycle.init();
   }
 

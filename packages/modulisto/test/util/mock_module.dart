@@ -15,7 +15,12 @@ base class TestCounter extends Module {
     required this.eventTransformer,
     this.delayBetweenEvents,
   }) {
-    Module.initialize(this, (ref) => ref.attach(_defaultPipeline));
+    Module.initialize(
+      this,
+      attach: {
+        _defaultPipeline,
+      },
+    );
   }
   late final increment = Trigger<()>(this);
   late final decrement = Trigger<()>(this);

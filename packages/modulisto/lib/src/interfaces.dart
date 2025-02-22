@@ -20,7 +20,6 @@ abstract class Updatable<T> {
 
 abstract class Attachable {
   @internal
-  @protected
   void attachToModule(ModuleRunner module);
 }
 

@@ -19,7 +19,9 @@ final class SignalModule extends Module {
   SignalModule() {
     Module.initialize(
       this,
-      (ref) => ref..attach(_pipeline),
+      attach: {
+        _pipeline,
+      },
     );
   }
 }

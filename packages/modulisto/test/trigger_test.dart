@@ -35,7 +35,7 @@ void main() {
 
       Module.initialize(
         dummy,
-        (ref) => ref..attach(defaultPipeline),
+        attach: {defaultPipeline},
       );
     });
     test('out-of-module invokation', () {

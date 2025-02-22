@@ -29,9 +29,10 @@ final class TestModule extends Module {
   TestModule() {
     Module.initialize(
       this,
-      ($) => $
-        ..attach(counterPipeline)
-        ..attach(_obstateObserver),
+      attach: {
+        counterPipeline,
+        _obstateObserver,
+      },
     );
   }
 }

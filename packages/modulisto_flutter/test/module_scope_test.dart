@@ -18,7 +18,9 @@ base class DummyWithStore extends DummyModule {
   DummyWithStore() {
     Module.initialize(
       this,
-      ($) => $..attach(_pipeline),
+      attach: {
+        _pipeline,
+      },
     );
   }
 }

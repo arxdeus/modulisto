@@ -29,7 +29,7 @@ void main() {
           ),
       );
 
-      Module.initialize(dummy, (ref) => ref..attach(syncPipeline));
+      Module.initialize(dummy, attach: {syncPipeline});
 
       test('feedback on trigger reaction', () async {
         expect(() => trigger(228), returnsNormally);

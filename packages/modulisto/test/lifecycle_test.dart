@@ -36,9 +36,10 @@ void main() {
 
     Module.initialize(
       dummy,
-      (ref) => ref
-        ..attach(syncPipeline)
-        ..attach(anotherPipeline),
+      attach: {
+        syncPipeline,
+        anotherPipeline,
+      },
     );
 
     test('lifecycle init groups worked', () async {
