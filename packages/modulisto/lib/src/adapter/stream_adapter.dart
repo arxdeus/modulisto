@@ -10,12 +10,14 @@ extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
     late final StreamController<T> controller;
 
     void callback(T value) => controller.add(value);
+    void immediateEmitCheck() {
+      if (unit is ValueUnit<T> && emitFirstImmediately) {
+        controller.add((unit as ValueUnit<T>).value);
+      }
+    }
+
     controller = StreamController.broadcast(
-      onListen: () {
-        if (unit is ValueUnit<T> && emitFirstImmediately) {
-          controller.add((unit as ValueUnit<T>).value);
-        }
-      },
+      onListen: immediateEmitCheck,
       onCancel: () => unit.removeListener(callback),
     );
 
