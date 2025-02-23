@@ -74,7 +74,7 @@ A subtype of the `Unit` that represents a holder/storage/container for `T` value
 
 ## `StoreView<T>`
 
-Ummutable view of `Store<T>` that discards possibility of updates
+Immutable view of `Store<T>` that discards possibility of updates
 
 `StoreView`'s may sounds like `computed`, since it can listen source (parent) Store and mutate inner value
 
