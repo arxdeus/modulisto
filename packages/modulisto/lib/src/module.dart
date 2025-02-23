@@ -3,6 +3,7 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
@@ -31,7 +32,7 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
   @protected
   @visibleForTesting
   @nonVirtual
-  late final Queue<PipelineUnit> linkedDisposables = Queue();
+  late final Queue<PipelineUnit> $linkedDisposables = Queue();
 
   final StreamController<RawUnitIntent> _intentController = StreamController.broadcast();
 
@@ -40,7 +41,7 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
     _lifecycle.dispose();
     _isClosed = true;
 
-    for (final disposable in linkedDisposables) {
+    for (final disposable in $linkedDisposables) {
       await disposable.dispose();
     }
     await _intentController.close();
@@ -50,14 +51,14 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
   @internal
   @protected
   @visibleForTesting
-  void addIntent<T>(UnitIntent<T, Object?> intent) {
+  void $addIntent<T>(UnitIntent<T, Object?> intent) {
     if (_intentController.isClosed) return;
     _intentController.add(intent);
   }
 
   @override
   @internal
-  Stream<RawUnitIntent> get intentStream => _intentController.stream;
+  Stream<RawUnitIntent> get $intentStream => _intentController.stream;
 
   @override
   bool get isClosed => _isClosed;

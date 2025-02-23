@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/internal.dart';
 
 @internal
 class SelfUnitIntent<T, U extends Stream<T>> implements UnitIntent<T, U> {
@@ -53,7 +54,7 @@ base class UnitImpl<T> implements UnitNotifier<T>, Unit<T> {
 
   @override
   @internal
-  final ModuleRunner module;
+  final ModuleBase module;
 
   @override
   final String? debugName;

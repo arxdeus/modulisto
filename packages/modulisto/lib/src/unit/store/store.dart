@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/unit.dart';
 
 abstract base class StoreBase<T> extends UnitImpl<T> implements ValueUnit<T> {
@@ -18,7 +19,7 @@ abstract base class Store<T> extends StoreBase<T> implements Updatable<T> {
   MappedStoreView<N, T> map<N>(ValueMapper<N, T> mapper) => MappedStoreView._(this, mapper);
 
   factory Store(
-    ModuleRunner module,
+    ModuleBase module,
     T initialValue, {
     String? debugName,
   }) = _UpdatableStore;

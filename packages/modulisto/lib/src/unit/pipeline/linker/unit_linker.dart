@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/internal.dart';
 
 class UnitPipelineLinker<T> implements PipelineLinker<Unit<T>, T> {
   final Unit<T> _unit;
@@ -15,7 +16,7 @@ class UnitPipelineLinker<T> implements PipelineLinker<Unit<T>, T> {
 
   @override
   void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
-    final callback = pipelineRef.handle(_unit, handler);
+    final callback = pipelineRef.$handle(_unit, handler);
     _unit.addListener(callback);
     pipelineRef.disposers.add(_unit.dispose);
   }

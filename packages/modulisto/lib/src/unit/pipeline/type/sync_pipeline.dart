@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/pipeline/linker/stream_linker.dart';
 import 'package:modulisto/src/unit/pipeline/linker/unit_linker.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
+
+abstract interface class SyncPipelineRef implements PipelineRef {}
 
 extension SyncPipelineExt on SyncPipelineRef {
   UnitPipelineLinker<T> unit<T>(Unit<T> unit) => UnitPipelineLinker(unit, this);
@@ -24,7 +27,7 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
   late final List<void Function()> disposers = [];
 
   @override
-  void Function(T value) handle<T>(
+  void Function(T value) $handle<T>(
     Object? intentSource,
     FutureOr<void> Function(PipelineContext context, T value) handler,
   ) =>
@@ -32,8 +35,8 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
 
   @override
   @protected
-  void attachToModule(ModuleRunner module) {
-    module.linkedDisposables.addLast(this);
+  void attachToModule(ModuleBase module) {
+    module.$linkedDisposables.addLast(this);
     pipelineRegister(this);
   }
 

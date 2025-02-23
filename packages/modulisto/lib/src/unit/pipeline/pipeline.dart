@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/pipeline/type/async_pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/type/sync_pipeline.dart';
 import 'package:modulisto/src/unit/unit.dart';
@@ -16,14 +17,17 @@ abstract base class PipelineUnit extends UnitImpl<Object?> implements Pipeline, 
 }
 
 abstract class Pipeline implements Attachable {
+  /// Pipeline that handles incoming events synchronously, without any queuing mechanism
   factory Pipeline.sync(
-    ModuleRunner module,
+    ModuleBase module,
     SyncPipelineRegisterCallback pipelineRegister, {
     String? debugName,
   }) = SyncPipeline;
 
+  /// Pipeline that transforms incoming events using [transformer]
+  /// and allows to create complex event queue
   factory Pipeline.async(
-    ModuleRunner module,
+    ModuleBase module,
     AsyncPipelineRegisterCallback pipelineRegister, {
     EventTransformer? transformer,
     String? debugName,

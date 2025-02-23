@@ -2,6 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:modulisto/modulisto.dart';
 
+/// Wrapper around [Unit] that emulates Flutter SDK [Listenable] behavior
+///
+/// Can be provided into `ListenableBuilder`, merged with other [Listenable]'s using [Listenable.merge]
+/// or used in any other way just like an ordinary [Listenable]
 class ListenableAdapter implements Listenable {
   ListenableAdapter(this._unit);
 

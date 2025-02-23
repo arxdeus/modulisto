@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:modulisto/src/adapter/unit_adapter.dart';
 import 'package:modulisto/src/interfaces.dart';
 
 extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {

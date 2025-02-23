@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/transformers.dart';
 import 'package:modulisto/src/unit/pipeline/linker/stream_linker.dart';
 import 'package:modulisto/src/unit/pipeline/linker/unit_linker.dart';
@@ -9,6 +10,8 @@ import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_task.dart';
 import 'package:stream_transform/stream_transform.dart';
+
+abstract interface class AsyncPipelineRef implements PipelineRef {}
 
 extension AsyncPipelineExt on AsyncPipelineRef {
   UnitPipelineLinker<T> unit<T>(Unit<T> unit) => UnitPipelineLinker(unit, this);
@@ -31,12 +34,8 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   @override
   late final List<void Function()> disposers = [];
 
-  @override
-  @internal
-  @protected
-  late final Map<Object?, List<StreamSubscription<void>>> subscriptions = {};
   late final Stream<RawPipelineIntent> _intentStream = _transformer(
-    module.intentStream.whereType<RawPipelineIntent>().where((intent) => intent.source == this),
+    module.$intentStream.whereType<RawPipelineIntent>().where((intent) => intent.source == this),
     _handleAsyncIntent,
   );
 
@@ -45,14 +44,14 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
 
   @override
   @protected
-  void attachToModule(ModuleRunner module) {
+  void attachToModule(ModuleBase module) {
     pipelineRegister(this);
     _sub = _intentStream.listen(null);
-    module.linkedDisposables.addFirst(this);
+    module.$linkedDisposables.addFirst(this);
   }
 
   @override
-  void Function(T value) handle<T>(
+  void Function(T value) $handle<T>(
     Object? intentSource,
     FutureOr<void> Function(PipelineContext context, T value) handler,
   ) {
@@ -70,7 +69,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
       );
 
       _pendingEvents.add(context.contextDeadline.future);
-      module.addIntent(intent);
+      module.$addIntent(intent);
     }
 
     return intentCallback;
