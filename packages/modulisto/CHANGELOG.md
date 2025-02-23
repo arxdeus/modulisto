@@ -1,3 +1,6 @@
+## 2.0.1
+* feat(sync_pipeline): `StreamPipelineLinker` in `SyncPipeline`
+
 ## 2.0.0
 
 * feat!(pipeline): new system of working with custom types in `Pipeline` - `PipelineLinker`
