@@ -17,7 +17,7 @@ class SelfUnitIntent<T, U extends Stream<T>> implements UnitIntent<T, U> {
 }
 
 @internal
-base class UnitImpl<T> implements ValueListenable<T>, Unit<T> {
+base class UnitImpl<T> implements UnitNotifier<T>, Unit<T> {
   UnitImpl(
     this.module, {
     this.debugName,

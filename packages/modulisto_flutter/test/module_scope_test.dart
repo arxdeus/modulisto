@@ -34,7 +34,7 @@ void main() {
           child: ModuleScope<DummyWithStore>.value(
             module: module,
             child: StoreBuilder(
-              store: module.state,
+              unit: module.state,
               builder: (context, state, child) => Text('$state'),
             ),
           ),

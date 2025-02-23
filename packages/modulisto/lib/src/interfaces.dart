@@ -76,7 +76,7 @@ typedef ModuleLifecycle = ({
 @internal
 typedef RawUnit = Unit<Object?>;
 
-abstract interface class Unit<T> implements Named, ModuleChild, ValueListenable<T>, Disposable {
+abstract interface class Unit<T> implements Named, ModuleChild, UnitNotifier<T>, Disposable {
   @override
   @internal
   @protected
@@ -92,7 +92,7 @@ abstract class ValueUnit<T> implements Unit<T> {
 typedef ValueChanged<T> = void Function(T value);
 typedef ValueMapper<T, F> = T Function(F value);
 
-abstract interface class ValueListenable<T> {
+abstract interface class UnitNotifier<T> {
   void notifyUpdate(T payload);
   void addListener(ValueChanged<T> callback);
   void removeListener(ValueChanged<T> callback);

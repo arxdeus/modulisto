@@ -1,6 +1,8 @@
 /// Modulisto
 library;
 
+export 'src/adapter/stream_adapter.dart';
+export 'src/adapter/unit_adapter.dart';
 export 'src/interfaces.dart' hide Disposable, ModuleBase, ModuleChild, ModuleRunner, RawUnit, UnitIntent;
 export 'src/module.dart';
 export 'src/transformers.dart';

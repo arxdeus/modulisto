@@ -7,8 +7,8 @@ import 'package:modulisto/modulisto.dart';
 class ModuleScope<M extends Module> extends StatefulWidget {
   /// {@macro module_scope}
   const ModuleScope({
-    required this.child,
     required this.create,
+    required this.child,
     super.key,
   });
 

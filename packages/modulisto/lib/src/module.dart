@@ -56,7 +56,7 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
   }
 
   @override
-  @visibleForTesting
+  @internal
   Stream<RawUnitIntent> get intentStream => _intentController.stream;
 
   @override

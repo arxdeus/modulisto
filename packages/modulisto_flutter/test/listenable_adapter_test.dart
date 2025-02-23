@@ -7,7 +7,7 @@ import 'package:modulisto_flutter/src/listenable_adapter.dart';
 import 'util/test_util.dart';
 
 void main() {
-  (ListenableAdapter, Trigger<()>) createListenableAdapter() {
+  (Listenable, Trigger<()>) createListenableAdapter() {
     final dummy = DummyModule();
     final trigger = Trigger<()>(dummy);
     final listenable = ListenableAdapter(trigger);

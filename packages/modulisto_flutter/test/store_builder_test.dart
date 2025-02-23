@@ -24,7 +24,7 @@ void main() {
       await tester.pumpWidget(
         TestUtil.appContext(
           child: StoreBuilder(
-            store: store,
+            unit: store,
             builder: (_, value, __) => Text(value.toString()),
           ),
         ),
