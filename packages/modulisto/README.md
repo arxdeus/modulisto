@@ -64,19 +64,19 @@ counter.decrement() // 1
 
 ## `Unit`
 
-An abstract, observable entity that encapsulates the relationship between modules and their ability to produce meaningful intention, denoted as `[Unit]Intent`, which describes the purpose or objective associated with the `Unit`
+An abstract, observable entity that encapsulates the relationship between modules and their ability to notify all dependants on this `Unit`
 
-Any `Unit` is also `Stream` so, it can be provided in third-party solutions without any steps
+Any `Unit` can be converted into `Stream` via `UnitAdapter`, so it can be provided in third-party solutions without any additional steps
 
 ## `Store<T>`
 
 A subtype of the `Unit` that represents a holder/storage/container for `T` value
 
-## `StoreView<T>`
+## `*StoreView<T>`
 
 Immutable view of `Store<T>` that discards possibility of updates
 
-`StoreView`'s may sounds like `computed`, since it can listen source (parent) Store and mutate inner value
+`StoreView`'s may sounds like `computed`, since it can listen source (parent) `Store` and mutate inner value
 
 At the moment there's exists only two subtypes of `StoreView`: `Store` (itself), `MappedStoreView<T, F>`
 
