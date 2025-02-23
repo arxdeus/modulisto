@@ -10,6 +10,7 @@ abstract base class StoreBase<T> extends UnitImpl<T> implements ValueUnit<T> {
   });
 }
 
+/// A subtype of the [Unit] that represents a holder/storage/container for [T] [value]
 abstract base class Store<T> extends StoreBase<T> implements Updatable<T> {
   Store._(
     super.module, {
@@ -54,6 +55,11 @@ final class _UpdatableStore<T> extends Store<T> {
   late T _value;
 }
 
+/// View of `parent` [Store] that listen for it updates and remaps `value` using `mapper` function
+///
+/// Value maps lazily, that means that first read of updated [value] will execute `mapper` function and cache the result
+/// If the [value] of underlying (parent) [Store] was changed, then newcoming read will execute `mapper` again and cache value.
+/// No unneccessary mapper execution at all, only on first read of [.value]
 final class MappedStoreView<T, F> extends StoreBase<T> {
   MappedStoreView._(
     this._parent,
