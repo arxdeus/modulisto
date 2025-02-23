@@ -17,21 +17,22 @@ void main() {
     final pullToggle = Trigger<int>(dummy);
     var lifecycleState = _Lifecycle.notInited;
 
+    void update(PipelineContext context, int value) {
+      print('lol');
+      context.update(someCoolToggle, value);
+    }
+
     late final anotherPipeline = Pipeline.sync(
       dummy,
-      ($) => $
-        ..bind(
-          pullToggle,
-          (context, value) => context.update(someCoolToggle, value),
-        ),
+      ($) => $..unit(pullToggle).bind(update),
     );
 
     late final syncPipeline = Pipeline.sync(
       dummy,
       ($) => $
-        ..redirect(dummy.lifecycle.init, (_) => lifecycleState = _Lifecycle.inited)
-        ..redirect(dummy.lifecycle.init, (_) => pullToggle(1))
-        ..redirect(dummy.lifecycle.dispose, (_) => lifecycleState = _Lifecycle.disposed),
+        ..unit(dummy.lifecycle.init).redirect((_) => lifecycleState = _Lifecycle.inited)
+        ..unit(dummy.lifecycle.init).redirect((_) => pullToggle(1))
+        ..unit(dummy.lifecycle.dispose).redirect((_) => lifecycleState = _Lifecycle.disposed),
     );
 
     Module.initialize(
@@ -56,6 +57,7 @@ void main() {
     test('all subscriptions are removed after dispose', () async {
       final oldValue = someCoolToggle.value;
       final newValue = oldValue + 1;
+
       expect(() => pullToggle(newValue), returnsNormally);
       expect(someCoolToggle.value, equals(oldValue));
     });

@@ -10,7 +10,7 @@ base class DummyWithStore extends DummyModule {
 
   late final _pipeline = Pipeline.sync(
     this,
-    ($) => $..bind(trigger, _updateState),
+    ($) => $..unit(trigger).bind(_updateState),
   );
 
   void _updateState(PipelineContext context, int value) => context.update(state, value);

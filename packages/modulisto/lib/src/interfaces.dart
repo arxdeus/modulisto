@@ -1,6 +1,7 @@
 // coverage:ignore-file
 
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
@@ -15,6 +16,7 @@ abstract class ModuleChild {
 }
 
 abstract class Updatable<T> {
+  @internal
   void update(T update);
 }
 
@@ -32,15 +34,15 @@ abstract class Named {
 abstract final class ModuleRunner {
   bool get isClosed;
 
-  abstract final List<Disposable> linkedDisposables;
+  abstract final Queue<Disposable> linkedDisposables;
   abstract final Stream<RawUnitIntent> intentStream;
-  void addIntent<T>(UnitIntent<T, Stream<T>> intent);
+  void addIntent<T>(UnitIntent<T, Object?> intent);
 }
 
-typedef RawUnitIntent = UnitIntent<dynamic, Stream<dynamic>>;
+typedef RawUnitIntent = UnitIntent<dynamic, Object?>;
 
 @internal
-abstract class UnitIntent<T, U extends Stream<T>> {
+abstract class UnitIntent<T, U> {
   abstract final U unit;
   abstract final T payload;
 }
@@ -52,7 +54,7 @@ abstract base class ModuleBase implements ModuleRunner {
   @internal
   @protected
   @visibleForTesting
-  abstract final List<Disposable> linkedDisposables;
+  abstract final Queue<Disposable> linkedDisposables;
 
   @override
   @internal
@@ -64,7 +66,7 @@ abstract base class ModuleBase implements ModuleRunner {
   @internal
   @protected
   @visibleForTesting
-  void addIntent<T>(UnitIntent<T, Stream<T>> intent);
+  void addIntent<T>(UnitIntent<T, Object?> intent);
 }
 
 typedef ModuleLifecycle = ({
@@ -74,19 +76,12 @@ typedef ModuleLifecycle = ({
 @internal
 typedef RawUnit = Unit<Object?>;
 
-abstract interface class Unit<T> extends Stream<T> implements Named, ModuleChild, Notifiable<T>, Disposable {
+abstract interface class Unit<T> implements Named, ModuleChild, ValueListenable<T>, Disposable {
   @override
   @internal
   @protected
   ModuleRunner get module;
 
-  // coverage:ignore-start
-  @override
-  @internal
-  @protected
-
-  /// [last] may cause infinite awaiting for value
-  Future<T> get last => super.last;
   // coverage:ignore-end
 }
 
@@ -94,24 +89,43 @@ abstract class ValueUnit<T> implements Unit<T> {
   T get value;
 }
 
-abstract interface class UnitHost {
-  Map<Notifiable<Object?>, List<void Function(Object?)>> get listeners;
-}
+typedef ValueChanged<T> = void Function(T value);
+typedef ValueMapper<T, F> = T Function(F value);
 
-abstract interface class Notifiable<T> {
+abstract interface class ValueListenable<T> {
   void notifyUpdate(T payload);
-  Set<UnitHost> get notifiableHosts;
+  void addListener(ValueChanged<T> callback);
+  void removeListener(ValueChanged<T> callback);
 }
 
-abstract interface class AsyncPipelineRef {
-  void bind<T>(Stream<T> stream, FutureOr<void> Function(PipelineContext context, T value) handler);
-  void redirect<T>(Stream<T> stream, FutureOr<void> Function(T value) handler);
+abstract interface class PipelineLinker<C, T> {
+  @internal
+  @protected
+  abstract final PipelineRef pipelineRef;
+
+  void bind(FutureOr<void> Function(PipelineContext context, T value) handler);
+  void redirect(FutureOr<void> Function(T value) handler);
 }
 
-abstract interface class SyncPipelineRef {
-  void bind<T>(Notifiable<T> unit, FutureOr<void> Function(PipelineContext context, T value) handler);
-  void redirect<T>(Notifiable<T> unit, FutureOr<void> Function(T value) handler);
+abstract class IntentHandler {
+  @internal
+  void Function(T value) handle<T>(
+    Object? intentSource,
+    FutureOr<void> Function(PipelineContext context, T value) handler,
+  );
 }
+
+abstract class PipelineRef implements IntentHandler {
+  @internal
+  List<void Function()> get disposers;
+}
+
+abstract interface class AsyncPipelineRef implements PipelineRef {
+  @internal
+  Map<Object?, List<StreamSubscription<void>>> get subscriptions;
+}
+
+abstract interface class SyncPipelineRef implements PipelineRef {}
 
 abstract interface class PipelineContext {
   bool get isClosed;
@@ -119,5 +133,5 @@ abstract interface class PipelineContext {
   void update<T>(Updatable<T> updatable, T value);
 }
 
-typedef EventMapper<Event> = Stream<Event> Function(Event value);
-typedef EventTransformer = Stream<Event> Function<Event>(Stream<Event> source, EventMapper<Event> process);
+typedef EventMapper<E> = Stream<E> Function(E value);
+typedef EventTransformer = Stream<E> Function<E>(Stream<E> source, EventMapper<E> process);

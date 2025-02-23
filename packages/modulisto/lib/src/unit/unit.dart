@@ -17,27 +17,27 @@ class SelfUnitIntent<T, U extends Stream<T>> implements UnitIntent<T, U> {
 }
 
 @internal
-base class UnitImpl<T> extends Stream<T> implements Notifiable<T>, Unit<T> {
+base class UnitImpl<T> implements ValueListenable<T>, Unit<T> {
   UnitImpl(
     this.module, {
     this.debugName,
   });
 
   bool _isDisposed = false;
-  bool _isAsynchronous = false;
+  final List<ValueChanged<T>> _listeners = [];
 
   @override
   @internal
-  @protected
-  late final Set<UnitHost> notifiableHosts = {};
+  void addListener(ValueChanged<T> callback) => _listeners.add(callback);
+  @override
+  @internal
+  void removeListener(ValueChanged<T> callback) => _listeners.remove(callback);
 
   @override
-  void dispose() {
+  @internal
+  FutureOr<void> dispose() {
+    _listeners.clear();
     _isDisposed = true;
-    for (final host in notifiableHosts) {
-      host.listeners.remove(this);
-    }
-    notifiableHosts.clear();
   }
 
   @override
@@ -46,46 +46,9 @@ base class UnitImpl<T> extends Stream<T> implements Notifiable<T>, Unit<T> {
   void notifyUpdate(T payload) {
     if (_isDisposed) return;
 
-    for (final host in notifiableHosts) {
-      final listeners = host.listeners[this];
-      if (listeners == null) return;
-
-      for (final callback in listeners) {
-        callback(payload);
-      }
+    for (final listener in _listeners) {
+      listener(payload);
     }
-
-    if (!_isAsynchronous) return;
-    if (module.isClosed) return;
-
-    Future(
-      () => module.addIntent(
-        SelfUnitIntent(
-          unit: this,
-          payload: payload,
-        ),
-      ),
-    );
-  }
-
-  @override
-  StreamSubscription<T> listen(
-    void Function(T event)? onData, {
-    Function? onError,
-    void Function()? onDone,
-    bool? cancelOnError,
-  }) {
-    if (!_isAsynchronous) _isAsynchronous = true;
-
-    return module.intentStream
-        .where((intent) => intent is SelfUnitIntent && intent.unit == this)
-        .map((intent) => intent.payload as T)
-        .listen(
-          onData,
-          onError: onError,
-          onDone: onDone,
-          cancelOnError: cancelOnError,
-        );
   }
 
   @override

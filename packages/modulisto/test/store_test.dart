@@ -19,12 +19,10 @@ void main() {
       late final syncPipeline = Pipeline.sync(
         dummy,
         ($) => $
-          ..bind(
-            trigger,
+          ..unit(trigger).bind(
             (context, value) => context.update(state, value),
           )
-          ..bind(
-            state,
+          ..unit(state).bind(
             (context, value) => context.update(linkedState, value.toString()),
           ),
       );

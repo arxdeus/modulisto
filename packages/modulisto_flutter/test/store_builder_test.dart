@@ -12,7 +12,7 @@ void main() {
     final trigger = Trigger<()>(dummy);
     final store = Store(dummy, 0);
     final pipeline =
-        Pipeline.async(dummy, ($) => $..bind(trigger, (context, _) => context.update(store, store.value + 1)));
+        Pipeline.async(dummy, ($) => $..unit(trigger).bind((context, _) => context.update(store, store.value + 1)));
     dummy.attach(pipeline);
     return (store, trigger);
   }

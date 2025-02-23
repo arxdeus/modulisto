@@ -7,10 +7,10 @@ import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 
-typedef RawPipelineIntent = PipelineIntent<dynamic, Stream<dynamic>>;
+typedef RawPipelineIntent = PipelineIntent<dynamic, Object?>;
 
 @internal
-class PipelineIntent<T, U extends Stream<T>> implements UnitIntent<T, U> {
+class PipelineIntent<T, U> implements UnitIntent<T, U> {
   @override
   final U unit;
   @override

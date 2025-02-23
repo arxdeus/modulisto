@@ -33,9 +33,9 @@ base class TestCounter extends Module {
   late final _defaultPipeline = Pipeline.async(
     this,
     ($) => $
-      ..bind(increment, _mutateCounter((old) => old + 1))
-      ..bind(decrement, _mutateCounter((old) => old - 1))
-      ..bind(reset, _mutateCounter((old) => 0)),
+      ..unit(increment).bind(_mutateCounter((old) => old + 1))
+      ..unit(decrement).bind(_mutateCounter((old) => old - 1))
+      ..unit(reset).bind(_mutateCounter((old) => 0)),
     transformer: eventTransformer,
   );
 

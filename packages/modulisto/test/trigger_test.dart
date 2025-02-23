@@ -29,8 +29,8 @@ void main() {
       late final defaultPipeline = Pipeline.sync(
         dummy,
         ($) => $
-          ..bind(trigger, markAsDone)
-          ..redirect(dummy.lifecycle.init, (_) => trigger(0)),
+          ..unit(trigger).bind(markAsDone)
+          ..unit(dummy.lifecycle.init).redirect((_) => trigger(0)),
       );
 
       Module.initialize(

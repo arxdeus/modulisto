@@ -1,3 +1,11 @@
+## 2.0.0
+
+* bump!: sync with actual `modulisto` version that contains breaking changes
+
+## 1.1.0
+
+* fix: adapt to new `Set<Attachable>` system
+
 ## 1.0.2
 
 * chore: bump `modulisto` up to 1.0.2

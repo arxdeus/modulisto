@@ -14,16 +14,16 @@ final class TestModule extends Module {
     this,
     debugName: 'counterPipeline',
     ($) => $
-      ..bind(increment, (context, _) => context.update(state, state.value + 1))
-      ..bind(decrement, (context, _) => context.update(state, state.value - 1))
-      ..bind(reset, (context, _) => context.update(state, 0)),
+      ..unit(increment).bind((context, _) => context.update(state, state.value + 1))
+      ..unit(decrement).bind((context, _) => context.update(state, state.value - 1))
+      ..unit(reset).bind((context, _) => context.update(state, 0)),
     transformer: eventTransformers.sequental,
   );
 
   late final _obstateObserver = Pipeline.sync(
     debugName: '_obstateObserver',
     this,
-    ($) => $..redirect(state, print),
+    ($) => $..unit(state).redirect(print),
   );
 
   TestModule() {

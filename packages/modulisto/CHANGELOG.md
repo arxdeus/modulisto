@@ -1,3 +1,16 @@
+## 2.0.0
+
+* feat!(pipeline): new system of working with custom types in `Pipeline` - `PipelineLinker`
+* feat!(pipeline): introduce two built-in linkers: `StreamPipelineLinker` and `UnitPipelineLinker`
+* feat!(pipeline): changed linkers signature in `Pipeline`' constructors, relevant type comes first and then goes by method of subscription
+* fix!(unit): `Unit<T>` now is just `ValueListenable<T>` from Flutter SDK, that means that it doesn't `extends Stream<T>`
+* refactor(unit): reduce count of asynchronous calls in `Unit` lifecycle
+* refactor(module): `Pipeline`'s queued by type for `.dispose`: `AsyncPipeline` disposes first, then `SyncPipeline` goes off too
+
+## 1.1.0
+
+* refactor: `Set<Attachable>` instead of attach callback in `Module.initialize`
+
 ## 1.0.2
 
 * docs: fullpledged `README.md`

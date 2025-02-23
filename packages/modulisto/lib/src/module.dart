@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
 abstract base class Module extends ModuleBase implements Disposable, Named {
@@ -29,16 +31,13 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
   @protected
   @visibleForTesting
   @nonVirtual
-  late final List<Disposable> linkedDisposables = [];
+  late final Queue<PipelineUnit> linkedDisposables = Queue();
 
   final StreamController<RawUnitIntent> _intentController = StreamController.broadcast();
 
   @override
   Future<void> dispose() async {
     _lifecycle.dispose();
-
-    /// Little trick to handle unit intentions and notifications before [dispose]
-    await Future<void>.delayed(Duration.zero);
     _isClosed = true;
 
     for (final disposable in linkedDisposables) {
@@ -51,12 +50,13 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
   @internal
   @protected
   @visibleForTesting
-  void addIntent<T>(UnitIntent<T, Stream<T>> intent) {
+  void addIntent<T>(UnitIntent<T, Object?> intent) {
     if (_intentController.isClosed) return;
     _intentController.add(intent);
   }
 
   @override
+  @visibleForTesting
   Stream<RawUnitIntent> get intentStream => _intentController.stream;
 
   @override
@@ -64,6 +64,7 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
 
   // coverage:ignore-start
   @override
+  @protected
   String? get debugName => null;
 
   @override
