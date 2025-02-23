@@ -1,3 +1,9 @@
+## 2.1.0
+
+* feat: extendable `UnitAdapter` that allows convertation of `Unit` into several other types
+* refactor: make `interfaces.dart` more clean looking
+* docs: doc-comments for `interfaces.dart`
+
 ## 2.0.2
 
 * docs: actualize documentation for `2.0.*`

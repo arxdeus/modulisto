@@ -1,3 +1,9 @@
+## 2.1.0
+
+* feat: `ListenableAdapter` that allows use [Unit] in [Listenable] context
+* feat: `ValueListenableAdapter` that allows use [Store] in [ValueListenable] context
+* bump: sync with `modulisto: 2.1.0`
+
 ## 2.0.0
 
 * bump!: sync with actual `modulisto` version that contains breaking changes
