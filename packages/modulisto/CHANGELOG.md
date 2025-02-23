@@ -1,3 +1,7 @@
+## 2.0.2
+
+* docs: actualize documentation for `2.0.*`
+
 ## 2.0.1
 * feat(sync_pipeline): `StreamPipelineLinker` in `SyncPipeline`
 

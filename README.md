@@ -24,26 +24,28 @@ class SimpleCounter extends Module {
   late final _pipeline = Pipeline.sync(
     this,
     ($) => $
+      /// Schema of linkage look like:
+      /// $..[type_of_linker].[type_of_subscription]
+      ..unit(increment).bind((context, _) => context.update(state, state.value + 1))
       /// [context] allow us to modify any `Store<T>` value
-      ..bind(increment, (context, _) => context.update(state, state.value + 1))
-      ..bind(decrement, (context, _) => context.update(state, state.value - 1))
+      ..unit(decrement).bind((context, _) => context.update(state, state.value - 1))
       /// [value] is payload of [_setValue] Trigger
-      ..bind(_setValue, (context, value) => context.update(state, value))
+      ..unit(_setValue).bind((context, value) => context.update(state, value))
       /// `redirect` allow us to do some actions without context and modifications of the `Store<T>`
       /// tear-off omitted for readability
-      ..redirect(state, (value) => print(value)),
+      ..unit(state).redirect((value) => print(value)),
   );
 ```
 
 ### 3. Initialize module and create subscriptions with `Module.initialize` in constructor body
 ```dart
 SimpleCounter(...) {
-    // ref is protected ModuleRef that used to create Module subscriptions
-    // and initialize declared `Unit`s
     Module.initialize(
         this,
-        /// `attach` 'binds/attaches/runs' our [pipeline] into this `Module`
-        (ref) => ref..attach(pipeline),
+        /// [attach] bind each passed pipeline onto this module and ensures that pipeline isn't double linked
+        attach: {
+          pipeline,
+        },
     );
 }
 ```
@@ -70,11 +72,28 @@ Any `Unit` is also `Stream` so, it can be provided in third-party solutions with
 
 A subtype of the `Unit` that represents a holder/storage/container for `T` value
 
+## `StoreView<T>`
+
+Ummutable view of `Store<T>` that discards possibility of updates
+
+`StoreView`'s may sounds like `computed`, since it can listen source (parent) Store and mutate inner value
+
+At the moment there's exists only two subtypes of `StoreView`: `Store` (itself), `MappedStoreView<T, F>`
+
+
+### MappedStoreView<T, F>
+
+You can get it by `.map` onto existing `Store<T>`
+
+Allows you to listen parent `Store` and map all newcoming values with special `mapper` function
+
+Value maps lazily, that means that first read of updated value will execute `mapper` function and cache the result. If the value was changed, then newcoming read will execute `mapper` again and cache value. No unneccessary `mapper` execution at all, only on first read of `.value`
+
 ## `Trigger<T>`
 
 A subtype of the `Unit` that represents a unary (synchronous) call.
 
-When the `.call` method is invoked (with the appropriate payload of type `T`), it returns a private `TriggerIntent<T>` object that brings `T` payload to subscribers
+When the `.call` method is invoked (with the appropriate payload of type `T`), it notifies all `Unit` listeners with new value
 
 `Trigger`'s eliminates the need to create custom `Event` classes, as is done in the `bloc`.
 
@@ -85,13 +104,9 @@ When the `.call` method is invoked (with the appropriate payload of type `T`), i
 1. Synchronous pipeline - `Pipeline.sync`
 2. Asynchronous pipeline - `Pipeline.async`
 
-### `ModuleRef`
-
-Protected reference to `this` module that allow us to attach `Pipeline`'s during the `initialization` phase
-
 ### `Pipeline.sync`
 
-Used to subscribe `Unit`s to synchronous callbacks that doesn't returns anything (`void`)
+Used to subscribe `Unit`s or `Stream`s to synchronous callbacks that doesn't returns anything (`void`)
 
 Under the hood, `Pipeline.sync` does not utilize any form of pipelining, so each callback is executed synchronously as reaction to the `Unit`
 
@@ -99,7 +114,7 @@ Can be used for debugging purposes or cross-invokation other `Trigger`'s
 
 ### `Pipeline.async`
 
-Used to subscribe any `Stream` and reacts to it in `.bind/.redirect` way
+Used to subscribe to `Unit`s or `Stream`s and reacts to it in `.bind/.redirect` way
 
 Each such `Pipeline` passes through an internal `StreamController` (shared for all events in `Module`) and is processed according to the provided `transformer`
 
