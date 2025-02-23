@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
+import 'package:modulisto/src/unit/pipeline/linker/stream_linker.dart';
 import 'package:modulisto/src/unit/pipeline/linker/unit_linker.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 
 extension SyncPipelineExt on SyncPipelineRef {
   UnitPipelineLinker<T> unit<T>(Unit<T> unit) => UnitPipelineLinker(unit, this);
+  StreamPipelineLinker<T> stream<T>(Stream<T> stream) => StreamPipelineLinker(stream, this);
 }
 
 @internal
