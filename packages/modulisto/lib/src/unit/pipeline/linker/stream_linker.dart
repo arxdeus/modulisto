@@ -17,7 +17,7 @@ class StreamPipelineLinker<T> implements PipelineLinker<Stream<T>, T> {
   @override
   void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
     final sub = _stream.listen(pipelineRef.$handle(_stream, handler));
-    pipelineRef.disposers.add(sub.cancel);
+    pipelineRef.$disposers.add(sub.cancel);
   }
 
   @override

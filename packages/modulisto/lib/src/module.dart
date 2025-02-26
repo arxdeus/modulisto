@@ -18,6 +18,10 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
     module._lifecycle.init();
   }
 
+  @override
+  @internal
+  late final List<void Function()> $disposers = [];
+
   bool _isClosed = false;
 
   late final _lifecycle = (

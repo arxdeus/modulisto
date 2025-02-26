@@ -10,7 +10,7 @@ typedef RawUnit = Unit<Object?>;
 typedef RawUnitIntent = UnitIntent<dynamic, Object?>;
 
 @internal
-abstract class ModuleBase {
+abstract class ModuleBase implements DisposerHolder {
   void attach(covariant Attachable attachable) => attachable.attachToModule(this);
 
   bool get isClosed;
@@ -51,7 +51,10 @@ abstract class Attachable {
   void attachToModule(ModuleBase module);
 }
 
-@internal
-abstract class PipelineRef implements IntentHandler {
-  List<void Function()> get disposers;
+abstract class DisposerHolder {
+  @internal
+  List<void Function()> get $disposers;
 }
+
+@internal
+abstract class PipelineRef implements IntentHandler, DisposerHolder {}

@@ -17,11 +17,13 @@ void main() {
         emitFirstImmediately: shouldEmitImmediately,
       );
       final additive = shouldEmitImmediately ? 1 : 0;
-      for (var i = 0; i < random - additive; i++) {
-        module.increment();
-      }
       final result = List.generate(random - additive, (i) => i + (1 - additive));
       expect(stream, emitsInOrder(result));
+      await Future<void>.microtask(() {
+        for (var i = 0; i < random - additive; i++) {
+          module.increment();
+        }
+      });
     }
 
     test(

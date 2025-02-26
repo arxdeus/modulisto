@@ -18,7 +18,7 @@ class UnitPipelineLinker<T> implements PipelineLinker<Unit<T>, T> {
   void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
     final callback = pipelineRef.$handle(_unit, handler);
     _unit.addListener(callback);
-    pipelineRef.disposers.add(_unit.dispose);
+    pipelineRef.$disposers.add(_unit.dispose);
   }
 
   @override

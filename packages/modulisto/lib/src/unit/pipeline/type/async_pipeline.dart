@@ -32,7 +32,8 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
 
   late final List<Future<void>> _pendingEvents = [];
   @override
-  late final List<void Function()> disposers = [];
+  @internal
+  late final List<void Function()> $disposers = [];
 
   late final Stream<RawPipelineIntent> _intentStream = _transformer(
     module.$intentStream.whereType<RawPipelineIntent>().where((intent) => intent.source == this),
@@ -82,7 +83,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
     await Future.wait(_pendingEvents);
     await _sub?.cancel();
 
-    for (final disposer in disposers) {
+    for (final disposer in $disposers) {
       disposer();
     }
     super.dispose();

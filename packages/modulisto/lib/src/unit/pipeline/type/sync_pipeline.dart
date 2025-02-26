@@ -24,7 +24,8 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
   });
 
   @override
-  late final List<void Function()> disposers = [];
+  @internal
+  late final List<void Function()> $disposers = [];
 
   @override
   void Function(T value) $handle<T>(
@@ -42,7 +43,7 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
 
   @override
   void dispose() {
-    for (final disposer in disposers) {
+    for (final disposer in $disposers) {
       disposer();
     }
     super.dispose();
