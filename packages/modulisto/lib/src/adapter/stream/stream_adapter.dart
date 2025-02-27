@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:modulisto/src/adapter/stream/read_only_stream.dart';
+import 'package:modulisto/src/adapter/stream/closable_stream_wrapper.dart';
 import 'package:modulisto/src/adapter/stream/subject.dart';
 import 'package:modulisto/src/interfaces.dart';
 
