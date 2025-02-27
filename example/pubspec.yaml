@@ -4,8 +4,9 @@ resolution: workspace
 publish_to: none
 
 environment:
-  sdk: ^3.6.1
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 dependencies:
-  modulisto: ^2.0.0
+  modulisto: ^2.1.0
 
