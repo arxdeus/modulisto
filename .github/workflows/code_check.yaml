@@ -47,7 +47,7 @@ jobs:
           filters: |
             flutter-file-changed:
               - '**.dart'
-              - '**.yaml'
+              - 'pubspec.yaml'
               - 'pubspec.lock'
 
       - name: Get Flutter SDK version constraint
@@ -104,12 +104,12 @@ jobs:
         id: check-analyzer
         timeout-minutes: 1
         run: |
-          flutter analyze --fatal-infos --fatal-warnings
+          flutter analyze --fatal-infos --fatal-warnings --no-pub
 
       - name: 🧪 Unit & Widget tests
         timeout-minutes: 2
         run: |
-          ls -d packages/* | xargs flutter test  --file-reporter="json:${{ env.FLUTTER_TEST_REPORT }}" --concurrency=6 --coverage
+          ls -d packages/* | xargs flutter test --file-reporter="json:${{ env.FLUTTER_TEST_REPORT }}" --concurrency=6 --no-pub --coverage
       - name: Write test report
         uses: dorny/test-reporter@v1
         # PRs from forks have no write permissions.

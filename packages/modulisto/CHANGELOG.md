@@ -1,3 +1,9 @@
+## 2.2.0
+
+* feat: `UnitAdapter<Unit>.stream()` returns `CloseableStreamWrapper` that allows us to interact only with underlying `.stream` and `.close`
+* feat: `UnitAdapter<Store>.stream(emitFirstImmediately: true)` will return `Subject` wrapped into `CloseableStreamWrapper`
+* feat: `Subject<T>` - lightweight alternative of `BehaviorSubject` from `rxdart`, emits last value on each new `StreamSubcription`
+
 ## 2.1.0
 
 * feat: extendable `UnitAdapter` that allows convertation of `Unit` into several other types
