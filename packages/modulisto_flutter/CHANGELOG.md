@@ -1,3 +1,7 @@
+## 2.2.0
+
+* bump: sync with `modulisto: 2.2.0`
+
 ## 2.1.0
 
 * feat: `ListenableAdapter` that allows use [Unit] in [Listenable] context
