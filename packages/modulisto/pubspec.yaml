@@ -23,7 +23,6 @@ platforms:
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.27.0"
 
 dependencies:
   meta: ^1.15.0

@@ -1,3 +1,8 @@
+## 2.2.1
+
+* fix: remove unneccessary flutter sdk constraint in `pubspec.yaml`
+* chore: rename `CloseableStreamWrapper` to `ClosableStreamWrapper`
+
 ## 2.2.0
 
 * feat: `UnitAdapter<Unit>.stream()` returns `CloseableStreamWrapper` that allows us to interact only with underlying `.stream` and `.close`
