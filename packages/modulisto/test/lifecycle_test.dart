@@ -18,7 +18,6 @@ void main() {
     var lifecycleState = _Lifecycle.notInited;
 
     void update(PipelineContext context, int value) {
-      print('lol');
       context.update(someCoolToggle, value);
     }
 

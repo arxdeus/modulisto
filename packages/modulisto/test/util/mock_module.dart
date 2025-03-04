@@ -27,6 +27,7 @@ base class TestCounter extends Module {
   late final reset = Trigger<()>(this);
 
   late final state = Store(this, 0);
+  late final stateX = Store(this, 0);
 
   final EventTransformer eventTransformer;
 
