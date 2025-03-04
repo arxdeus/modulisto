@@ -35,11 +35,12 @@ class Subject<T> implements StreamController<T> {
 
   T? _value;
   T get value => _value ?? (throw StateError('No value observed yet'));
+  T? get valueOrNull => _value;
 
   @override
   void add(T event) {
-    _parent.add(event);
     _value = event;
+    _parent.add(event);
   }
 
   @override
@@ -80,12 +81,14 @@ class SubjectStream<T> extends Stream<T> {
     this._subject,
   );
 
-  T get value => _subject.value;
+  Stream<T> get _realStream {
+    final controller = StreamController<T>(sync: true);
+    final value = _subject.value;
+    if (value != null) controller.add(value);
 
-  Stream<T> get _realStream async* {
-    final value = _subject._value;
-    if (value != null) yield value;
-    yield* _subject._parent.stream;
+    controller.addStream(_subject._parent.stream).whenComplete(controller.close).onError(controller.addError).ignore();
+
+    return controller.stream;
   }
 
   @override
