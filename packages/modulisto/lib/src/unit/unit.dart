@@ -22,7 +22,9 @@ base class UnitImpl<T> implements UnitNotifier<T>, Unit<T> {
   UnitImpl(
     this.module, {
     this.debugName,
-  });
+  }) {
+    module.$disposeQueue.addLast(dispose);
+  }
 
   bool _isDisposed = false;
   final List<ValueChanged<T>> _listeners = [];
