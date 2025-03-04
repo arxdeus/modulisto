@@ -15,7 +15,8 @@ abstract class ModuleBase implements DisposerHolder {
 
   bool get isClosed;
 
-  abstract final Queue<Disposable> $linkedDisposables;
+  @override
+  abstract final Queue<FutureOr<void> Function()> $disposeQueue;
   abstract final Stream<RawUnitIntent> $intentStream;
   void $addIntent<T>(UnitIntent<T, Object?> intent);
 }
@@ -53,8 +54,12 @@ abstract class Attachable {
 
 abstract class DisposerHolder {
   @internal
-  List<void Function()> get $disposers;
+  Queue<FutureOr<void> Function()> get $disposeQueue;
 }
 
 @internal
-abstract class PipelineRef implements IntentHandler, DisposerHolder {}
+abstract class PipelineRef implements IntentHandler, DisposerHolder {
+  @override
+  @internal
+  Queue<FutureOr<void> Function()> get $disposeQueue;
+}

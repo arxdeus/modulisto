@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
@@ -33,7 +34,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   late final List<Future<void>> _pendingEvents = [];
   @override
   @internal
-  late final List<void Function()> $disposers = [];
+  late final Queue<void Function()> $disposeQueue = Queue();
 
   late final Stream<RawPipelineIntent> _intentStream = _transformer(
     module.$intentStream.whereType<RawPipelineIntent>().where((intent) => intent.source == this),
@@ -48,7 +49,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   void attachToModule(ModuleBase module) {
     pipelineRegister(this);
     _sub = _intentStream.listen(null);
-    module.$linkedDisposables.addFirst(this);
+    module.$disposeQueue.addFirst(dispose);
   }
 
   @override
@@ -83,7 +84,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
     await Future.wait(_pendingEvents);
     await _sub?.cancel();
 
-    for (final disposer in $disposers) {
+    for (final disposer in $disposeQueue) {
       disposer();
     }
     super.dispose();

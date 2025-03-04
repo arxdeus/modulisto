@@ -4,7 +4,6 @@ import 'dart:collection';
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
-import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
 abstract base class Module extends ModuleBase implements Disposable, Named {
@@ -18,12 +17,13 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
     module._lifecycle.init();
   }
 
-  @override
-  @internal
-  late final List<void Function()> $disposers = [];
-
   bool _isClosed = false;
 
+  @override
+  @internal
+  @nonVirtual
+  @visibleForTesting
+  late final Queue<FutureOr<void> Function()> $disposeQueue = Queue();
   late final _lifecycle = (
     init: Trigger<()>(this),
     dispose: Trigger<()>(this),
@@ -32,12 +32,6 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
   @nonVirtual
   ModuleLifecycle get lifecycle => _lifecycle;
 
-  @override
-  @protected
-  @visibleForTesting
-  @nonVirtual
-  late final Queue<PipelineUnit> $linkedDisposables = Queue();
-
   final StreamController<RawUnitIntent> _intentController = StreamController.broadcast();
 
   @override
@@ -45,8 +39,8 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
     _lifecycle.dispose();
     _isClosed = true;
 
-    for (final disposable in $linkedDisposables) {
-      await disposable.dispose();
+    for (final dispose in $disposeQueue) {
+      await dispose();
     }
     await _intentController.close();
   }

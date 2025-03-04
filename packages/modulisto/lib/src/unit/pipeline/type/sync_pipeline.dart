@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
@@ -25,7 +26,7 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
 
   @override
   @internal
-  late final List<void Function()> $disposers = [];
+  late final Queue<void Function()> $disposeQueue = Queue();
 
   @override
   void Function(T value) $handle<T>(
@@ -37,13 +38,13 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
   @override
   @protected
   void attachToModule(ModuleBase module) {
-    module.$linkedDisposables.addLast(this);
+    module.$disposeQueue.addLast(dispose);
     pipelineRegister(this);
   }
 
   @override
   void dispose() {
-    for (final disposer in $disposers) {
+    for (final disposer in $disposeQueue) {
       disposer();
     }
     super.dispose();
