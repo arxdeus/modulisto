@@ -5,7 +5,6 @@ import 'dart:math';
 
 import 'package:modulisto/modulisto.dart';
 import 'package:modulisto/src/adapter/stream/subject.dart';
-import 'package:modulisto/src/adapter/stream/subject_adapter.dart';
 import 'package:test/test.dart';
 
 import 'util/mock_module.dart';

@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
+@internal
 class Subject<T> implements StreamController<T> {
   Subject({
     T? initialValue,
