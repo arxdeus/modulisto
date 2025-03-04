@@ -2,6 +2,7 @@
 library;
 
 export 'src/adapter/stream/stream_adapter.dart';
+export 'src/adapter/stream/subject_adapter.dart';
 export 'src/interfaces.dart' hide Disposable;
 export 'src/module.dart';
 export 'src/transformers.dart';
