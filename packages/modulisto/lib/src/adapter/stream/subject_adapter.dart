@@ -1,19 +1,17 @@
-import 'dart:async';
-
 import 'package:meta/meta.dart';
+import 'package:modulisto/src/adapter/stream/subject.dart';
 import 'package:modulisto/src/interfaces.dart';
 
-extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
+extension ValueUnitUnitToStreamAdapter<T> on UnitAdapter<ValueUnit<T>> {
   @internal
   @visibleForTesting
-  static final Expando<StreamController<Object?>> linkedControllers = Expando();
+  static final Expando<Subject<dynamic>> linkedControllers = Expando();
 
-  Stream<T> stream() {
+  Stream<T> subject() {
     if (unit.module.isClosed) return const Stream.empty();
-
-    final linkedController = linkedControllers[unit] as StreamController<T>?;
+    final linkedController = linkedControllers[unit] as Subject<T>?;
     final hasControllerBefore = linkedController != null;
-    final StreamController<T> controller = linkedController ?? StreamController<T>.broadcast();
+    final Subject<T> controller = linkedController ?? Subject(initialValue: unit.value);
 
     if (!hasControllerBefore) {
       void callback(T value) => controller.add(value);
@@ -23,7 +21,6 @@ extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
         ..addListener(callback)
         ..module.$disposeQueue.add(() {
           linkedControllers[unit] = null;
-
           unit.removeListener(callback);
           controller.close();
         });
