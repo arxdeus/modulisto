@@ -1,5 +1,9 @@
 import 'package:modulisto/modulisto.dart';
 
+abstract class TestInterface {
+  Future<int> someNumber(int test);
+}
+
 final class SignalModule extends Module {
   late final Trigger<({int test})> trigger = Trigger(this);
   late final store = Store(this, 0);
@@ -12,16 +16,20 @@ final class SignalModule extends Module {
 
   late final _syncPipeline = Pipeline.sync(this, ($) => $..unit(store).redirect(print));
 
+  Future<int> someNumber(int test) => Operation(#someNumber, () async => test);
+  Future<int> someNumber2(int test2) => Operation(#someNumber2, () async => test2);
+
   late final _pipeline = Pipeline.async(
     this,
-    ($) => $..unit(trigger).bind(_update),
+    ($) => $
+      ..unit(trigger).bind(_update)
+      ..operationOnType<int>(#someNumber2).redirect(print),
     transformer: eventTransformers.sequental,
   );
 
   SignalModule() {
     Module.initialize(
       this,
-      debugName: 'test',
       attach: {
         _syncPipeline,
         _pipeline,
@@ -31,13 +39,12 @@ final class SignalModule extends Module {
 }
 
 void main(List<String> args) async {
+  ModulistoSettings.debugReportTypeMismatchOnOperation = false;
+
   final module = SignalModule();
-  print(module);
+
   module.trigger((test: 228));
-  module.trigger((test: 229));
-  module.trigger((test: 240));
-  module.trigger((test: 230));
-  await module.dispose();
-  module.trigger((test: 999));
-  module.trigger((test: 1));
+
+  final number = await module.someNumber2(44);
+  module.trigger((test: number));
 }
