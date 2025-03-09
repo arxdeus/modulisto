@@ -58,7 +58,11 @@ abstract class DisposerHolder {
 }
 
 @internal
-abstract class PipelineRef implements IntentHandler, DisposerHolder {
+abstract class PipelineRef implements ModuleChild, IntentHandler, DisposerHolder {
+  @override
+  @internal
+  ModuleBase get $module;
+
   @override
   @internal
   Queue<FutureOr<void> Function()> get $disposeQueue;
