@@ -4,8 +4,10 @@ import 'package:modulisto/modulisto.dart';
 final createModule = ({
   required EventTransformer eventTransformer,
   Duration? delayBetweenEvents,
+  String? debugName,
 }) =>
     TestCounter(
+      debugName: debugName,
       eventTransformer: eventTransformer,
       delayBetweenEvents: delayBetweenEvents,
     );
@@ -14,9 +16,11 @@ base class TestCounter extends Module {
   TestCounter({
     required this.eventTransformer,
     this.delayBetweenEvents,
+    String? debugName,
   }) {
     Module.initialize(
       this,
+      debugName: debugName,
       attach: {
         _defaultPipeline,
       },
