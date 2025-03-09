@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/operation.dart';
+import 'package:modulisto/src/settings.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
 class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T> {
@@ -28,10 +29,12 @@ class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T> {
     final trigger =
         OperationRunner.operationRunners[pipelineRef.$module]![_operationId] ??= Trigger<Object?>(pipelineRef.$module)
           ..addListener((value) {
-            assert(
-              value.runtimeType == T,
-              'Type mismatch on Operation($_operationId), expected: $T, got: ${value.runtimeType} ',
-            );
+            if (ModulistoSettings.debugReportTypeMismatchOnOperation) {
+              assert(
+                value.runtimeType == T,
+                'Type mismatch on Operation($_operationId), expected: $T, got: ${value.runtimeType} ',
+              );
+            }
             if (value.runtimeType != T) return;
             callback(value as T);
           });
