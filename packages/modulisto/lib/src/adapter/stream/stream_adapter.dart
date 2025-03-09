@@ -9,7 +9,7 @@ extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
   static final Expando<StreamController<Object?>> linkedControllers = Expando();
 
   Stream<T> stream() {
-    if (unit.module.isClosed) return const Stream.empty();
+    if (unit.$module.isClosed) return const Stream.empty();
 
     final linkedController = linkedControllers[unit] as StreamController<T>?;
     final hasControllerBefore = linkedController != null;
@@ -21,7 +21,7 @@ extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
 
       unit
         ..addListener(callback)
-        ..module.$disposeQueue.add(() {
+        ..$module.$disposeQueue.add(() {
           linkedControllers[unit] = null;
 
           unit.removeListener(callback);

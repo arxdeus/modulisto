@@ -8,7 +8,7 @@ extension ValueUnitUnitToStreamAdapter<T> on UnitAdapter<ValueUnit<T>> {
   static final Expando<Subject<dynamic>> linkedControllers = Expando();
 
   Stream<T> subject() {
-    if (unit.module.isClosed) return const Stream.empty();
+    if (unit.$module.isClosed) return const Stream.empty();
     final linkedController = linkedControllers[unit] as Subject<T>?;
     final hasControllerBefore = linkedController != null;
     final Subject<T> controller = linkedController ?? Subject(initialValue: unit.value);
@@ -19,7 +19,7 @@ extension ValueUnitUnitToStreamAdapter<T> on UnitAdapter<ValueUnit<T>> {
 
       unit
         ..addListener(callback)
-        ..module.$disposeQueue.add(() {
+        ..$module.$disposeQueue.add(() {
           linkedControllers[unit] = null;
           unit.removeListener(callback);
           controller.close();

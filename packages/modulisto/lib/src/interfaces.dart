@@ -31,7 +31,7 @@ typedef ModuleLifecycle = ({
 abstract interface class Unit<T> implements Named, ModuleChild, UnitNotifier<T>, Disposable {
   @override
   @internal
-  ModuleBase get module;
+  ModuleBase get $module;
 
   @override
   @internal

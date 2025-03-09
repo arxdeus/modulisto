@@ -20,10 +20,10 @@ class SelfUnitIntent<T, U extends Stream<T>> implements UnitIntent<T, U> {
 @internal
 base class UnitImpl<T> implements UnitNotifier<T>, Unit<T> {
   UnitImpl(
-    this.module, {
+    this.$module, {
     this.debugName,
   }) {
-    module.$disposeQueue.addLast(dispose);
+    $module.$disposeQueue.addLast(dispose);
   }
 
   bool _isDisposed = false;
@@ -56,7 +56,7 @@ base class UnitImpl<T> implements UnitNotifier<T>, Unit<T> {
 
   @override
   @internal
-  final ModuleBase module;
+  final ModuleBase $module;
 
   @override
   final String? debugName;

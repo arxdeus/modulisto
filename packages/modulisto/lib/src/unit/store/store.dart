@@ -5,7 +5,7 @@ import 'package:modulisto/src/unit/unit.dart';
 
 abstract base class StoreBase<T> extends UnitImpl<T> implements ValueUnit<T> {
   StoreBase(
-    super.module, {
+    super.$module, {
     super.debugName,
   });
 }
@@ -31,7 +31,7 @@ abstract base class Store<T> extends StoreBase<T> implements Updatable<T> {
   void dispose() => super.dispose();
 
   @override
-  String toString() => '$runtimeType(debugName: $debugName, value: $value, module: $module)';
+  String toString() => '$runtimeType(debugName: $debugName, value: $value, module: ${$module})';
 }
 
 final class _UpdatableStore<T> extends Store<T> {
@@ -65,7 +65,7 @@ final class MappedStoreView<T, F> extends StoreBase<T> {
     this._parent,
     this._mapper, {
     super.debugName,
-  }) : super(_parent.module) {
+  }) : super(_parent.$module) {
     _parent.addListener(_setCallback);
     _cachedValue = _mapper(_parent.value);
   }

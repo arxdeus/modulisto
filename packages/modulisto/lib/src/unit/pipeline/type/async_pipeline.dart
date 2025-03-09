@@ -37,7 +37,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   late final Queue<void Function()> $disposeQueue = Queue();
 
   late final Stream<RawPipelineIntent> _intentStream = _transformer(
-    module.$intentStream.whereType<RawPipelineIntent>().where((intent) => intent.source == this),
+    $module.$intentStream.whereType<RawPipelineIntent>().where((intent) => intent.source == this),
     _handleAsyncIntent,
   );
 
@@ -59,7 +59,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   ) {
     void intentCallback(T value) {
       if (_isClosed) return;
-      if (module.isClosed) return;
+      if ($module.isClosed) return;
 
       final context = PipelineContextWithDeadline.create();
       final intent = RawPipelineIntent(
@@ -71,7 +71,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
       );
 
       _pendingEvents.add(context.contextDeadline.future);
-      module.$addIntent(intent);
+      $module.$addIntent(intent);
     }
 
     return intentCallback;
@@ -112,5 +112,5 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   }
 
   @override
-  String toString() => 'AsyncPipeline(debugName: $debugName, module: $module)';
+  String toString() => 'AsyncPipeline(debugName: $debugName, module: ${$module})';
 }

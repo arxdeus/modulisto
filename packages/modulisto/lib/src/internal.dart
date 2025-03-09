@@ -39,7 +39,7 @@ abstract class IntentHandler {
 @internal
 abstract class ModuleChild {
   @internal
-  ModuleBase get module;
+  ModuleBase get $module;
 }
 
 abstract class Updatable<T> {
