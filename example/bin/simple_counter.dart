@@ -1,9 +1,6 @@
 import 'package:modulisto/modulisto.dart';
 
 final class TestModule extends Module {
-  @override
-  String get debugName => 'Test';
-
   late final increment = Trigger<()>(this, debugName: 'increment');
   late final decrement = Trigger<()>(this, debugName: 'decrement');
   late final reset = Trigger<()>(this, debugName: 'reset');

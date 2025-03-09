@@ -15,11 +15,6 @@ abstract class Disposable {
   FutureOr<void> dispose();
 }
 
-abstract class Named {
-  /// [debugName] will appear in logs instead of [runtimeType]
-  String? get debugName;
-}
-
 typedef ModuleLifecycle = ({
   /// [Unit] that reacts on `Module` successfull initialization
   Unit<()> init,

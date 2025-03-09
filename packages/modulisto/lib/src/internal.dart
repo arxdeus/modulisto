@@ -5,6 +5,12 @@ import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 
 @internal
+abstract class Named {
+  /// [$debugName] will appear in logs instead of [runtimeType]
+  String? get $debugName;
+}
+
+@internal
 typedef RawUnit = Unit<Object?>;
 @internal
 typedef RawUnitIntent = UnitIntent<dynamic, Object?>;

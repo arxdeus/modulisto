@@ -55,5 +55,5 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
   final void Function(SyncPipelineRef pipeline) pipelineRegister;
 
   @override
-  String toString() => 'SyncPipeline(debugName: $debugName, module: ${$module})';
+  String toString() => 'SyncPipeline(debugName: ${$debugName}, module: ${$module})';
 }

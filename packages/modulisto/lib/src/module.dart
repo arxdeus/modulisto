@@ -11,10 +11,12 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
   static void initialize(
     Module module, {
     required Set<Attachable> attach,
+    String? debugName,
   }) {
     for (final attachable in attach) {
       attachable.attachToModule(module);
     }
+    module.$debugName = debugName;
     module._lifecycle.init();
   }
 
@@ -62,14 +64,12 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
   @override
   bool get isClosed => _isClosed;
 
-  // coverage:ignore-start
   @override
-  @protected
-  String? get debugName => null;
+  @nonVirtual
+  late final String? $debugName;
 
   @override
-  String toString() => 'Module(debugName: $debugName, isClosed: $isClosed)';
-  // coverage:ignore-end
+  String toString() => 'Module(runtimeType: $runtimeType, debugName: ${$debugName}, isClosed: $isClosed)';
 
   @override
   @protected

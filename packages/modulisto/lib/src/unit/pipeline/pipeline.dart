@@ -12,8 +12,8 @@ typedef SyncPipelineRegisterCallback = void Function(SyncPipelineRef $);
 abstract base class PipelineUnit extends UnitImpl<Object?> implements Pipeline, Disposable {
   PipelineUnit(
     super.module, {
-    super.debugName,
-  });
+    String? debugName,
+  }) : super($debugName: debugName);
 }
 
 abstract class Pipeline implements Attachable {

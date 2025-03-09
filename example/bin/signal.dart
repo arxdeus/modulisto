@@ -21,6 +21,7 @@ final class SignalModule extends Module {
   SignalModule() {
     Module.initialize(
       this,
+      debugName: 'test',
       attach: {
         _syncPipeline,
         _pipeline,
@@ -31,7 +32,7 @@ final class SignalModule extends Module {
 
 void main(List<String> args) async {
   final module = SignalModule();
-
+  print(module);
   module.trigger((test: 228));
   module.trigger((test: 229));
   module.trigger((test: 240));

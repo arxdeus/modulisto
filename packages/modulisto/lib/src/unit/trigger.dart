@@ -18,8 +18,8 @@ extension TriggerPayloadCallExt<T> on Trigger<T> {
 final class Trigger<T> extends UnitImpl<T> {
   Trigger(
     super.$module, {
-    super.debugName,
-  });
+    String? debugName,
+  }) : super($debugName: debugName);
 
   @override
   @internal
@@ -27,5 +27,5 @@ final class Trigger<T> extends UnitImpl<T> {
   void notifyUpdate(T payload) => super.notifyUpdate(payload);
 
   @override
-  String toString() => 'Trigger(debugName: $debugName, module: ${$module})';
+  String toString() => 'Trigger(debugName: ${$debugName}, module: ${$module})';
 }

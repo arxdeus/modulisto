@@ -114,5 +114,5 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   }
 
   @override
-  String toString() => 'AsyncPipeline(debugName: $debugName, module: ${$module})';
+  String toString() => 'AsyncPipeline(debugName: ${$debugName}, module: ${$module})';
 }
