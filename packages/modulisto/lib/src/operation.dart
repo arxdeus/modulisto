@@ -1,11 +1,12 @@
 import 'package:meta/meta.dart';
+import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
 @internal
 typedef OperationRunnerMap = Map<Symbol, Trigger<Object?>>;
 
 @internal
-base mixin OperationRunner {
+base mixin OperationRunner on ModuleBase {
   @internal
   static final operationRunners = Expando<OperationRunnerMap>('operationRunners');
 

@@ -4,9 +4,10 @@ import 'dart:collection';
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
+import 'package:modulisto/src/operation.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
-abstract base class Module extends ModuleBase implements Disposable, Named {
+abstract base class Module extends ModuleBase with OperationRunner implements Disposable, Named {
   static void initialize(
     Module module, {
     required Set<Attachable> attach,
