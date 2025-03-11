@@ -24,22 +24,19 @@ class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T> {
   @override
   void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
     final callback = pipelineRef.$handle(_operationId, handler);
-    final _ = OperationRunner.operationRunners[pipelineRef.$module] ??= {};
+    final moduleMap = OperationRunner.operationRunners[pipelineRef.$module] ??= {};
 
-    final trigger =
-        OperationRunner.operationRunners[pipelineRef.$module]![_operationId] ??= Trigger<Object?>(pipelineRef.$module)
-          ..addListener((value) {
-            if (ModulistoSettings.debugReportTypeMismatchOnOperation) {
-              assert(
-                value.runtimeType == T,
-                'Type mismatch on Operation($_operationId), expected: $T, got: ${value.runtimeType} ',
-              );
-            }
-            if (value.runtimeType != T) return;
-            callback(value as T);
-          });
-
-    pipelineRef.$disposeQueue.addLast(trigger.dispose);
+    (moduleMap[_operationId] ??= Trigger<Object?>(pipelineRef.$module, debugName: 'OperationTrigger($_operationId)'))
+        .addListener((value) {
+      if (ModulistoSettings.debugReportTypeMismatchOnOperation) {
+        assert(
+          value.runtimeType == T,
+          'Type mismatch on Operation($_operationId), expected: $T, got: ${value.runtimeType} ',
+        );
+      }
+      if (value.runtimeType != T) return;
+      callback(value as T);
+    });
   }
 
   @override

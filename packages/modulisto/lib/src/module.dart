@@ -46,6 +46,7 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
       await dispose();
     }
     await _intentController.close();
+    super.dispose();
   }
 
   @override

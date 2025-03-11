@@ -1,4 +1,5 @@
 import 'package:modulisto/modulisto.dart';
+import 'package:modulisto/src/operation.dart';
 import 'package:test/test.dart';
 
 import 'util/dummy_module.dart';
@@ -54,6 +55,23 @@ void main() {
       expect(number, targetNumber);
       expect(store.value, isNot(number));
       expect(store.value, equals(0));
+    });
+    test('ensure that internal triggers of operation are disposed after module dispose', () async {
+      final dummy = DummyModule();
+
+      Future<int> _(int test) => dummy.runOperation(#test1, () => Future.value(test));
+
+      final pipeline = Pipeline.sync(
+        dummy,
+        ($) => $..operationOnType<int>(#test1).redirect((_) {}),
+      );
+
+      Module.initialize(dummy, attach: {pipeline});
+
+      await dummy.dispose();
+
+      expect(dummy.isClosed, isTrue);
+      expect(OperationRunner.operationRunners[dummy], isNull);
     });
   });
 }
