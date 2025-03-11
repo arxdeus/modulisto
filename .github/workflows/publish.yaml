@@ -9,8 +9,8 @@ on:
 
 jobs:
   dry_publish:
-    if: github.event.base_ref != 'refs/heads/main'
+    # if: github.event.base_ref != 'refs/heads/main'
     uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_dry_publish.yaml@main
-  publish:
-    if: github.event.base_ref == 'refs/heads/main'
-    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_publish.yaml@main
+  # publish:
+  #   if: github.event.base_ref == 'refs/heads/main'
+  #   uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_publish.yaml@main
