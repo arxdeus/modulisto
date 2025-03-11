@@ -9,4 +9,4 @@ on:
 
 jobs:
   publish:
-    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_publish.yaml@main
+    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_dry_publish.yaml@main
