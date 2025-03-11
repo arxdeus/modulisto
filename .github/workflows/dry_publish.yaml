@@ -1,0 +1,31 @@
+name: Dry publish precheck
+permissions:
+  contents: write
+  id-token: write
+on:
+  workflow_call:
+    inputs:
+      package-name:
+        type: string
+        default: "modulisto"
+        required: true
+      package-version:
+        type: string
+        default: '9.9.9'
+        required: true
+  workflow_dispatch:
+    inputs:
+      package-name:
+        type: string
+        default: "modulisto"
+        required: true
+      package-version:
+        type: string
+        default: '9.9.9'
+        required: true
+jobs:
+  publish:
+    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_dry_publish.yaml@main
+    with:
+      package-version: ${{ inputs.package-version }}
+      package-name: ${{ inputs.package-name }}

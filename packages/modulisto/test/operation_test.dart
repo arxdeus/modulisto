@@ -59,8 +59,6 @@ void main() {
     test('ensure that internal triggers of operation are disposed after module dispose', () async {
       final dummy = DummyModule();
 
-      Future<int> _(int test) => dummy.runOperation(#test1, () => Future.value(test));
-
       final pipeline = Pipeline.sync(
         dummy,
         ($) => $..operationOnType<int>(#test1).redirect((_) {}),
