@@ -8,9 +8,5 @@ on:
       - '*-v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  dry_publish:
-    # if: github.event.base_ref != 'refs/heads/main'
-    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_dry_publish.yaml@main
-  # publish:
-  #   if: github.event.base_ref == 'refs/heads/main'
-  #   uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_publish.yaml@main
+  publish:
+    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_publish.yaml@main
