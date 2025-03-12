@@ -6,12 +6,9 @@ on:
   workflow_call:
     inputs:
       package-name:
-        type: choice
+        type: string
         description: Which package to publish
         required: true
-        options:
-        - modulisto
-        - modulisto_flutter
       package-version:
         type: string
         default: '0.0.0'
