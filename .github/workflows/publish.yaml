@@ -29,3 +29,7 @@ on:
 jobs:
   publish:
     uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_publish.yaml@main
+    with:
+      package-version: ${{ inputs.package-version }}
+      package-name: ${{ inputs.package-name }}
+
