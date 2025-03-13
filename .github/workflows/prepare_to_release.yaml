@@ -1,0 +1,118 @@
+name: Prepare to release
+permissions:
+  contents: write
+  id-token: write
+on:
+  workflow_dispatch:
+    inputs:
+      package-name:
+        type: choice
+        description: Which package to publish
+        required: true
+        options:
+        - modulisto
+        - modulisto_flutter
+      package-version:
+        type: string
+        default: '0.0.0'
+        required: true
+
+jobs:
+  # setup:
+  #     runs-on: ubuntu-latest
+  #     outputs:
+  #       flutter-version: ${{ steps.flutter-version.outputs.version }}
+  #     steps:
+  #       - name: 📦 Get the .github actions
+  #         uses: actions/checkout@v4
+  #         with:
+  #           sparse-checkout: |
+  #             .github
+  #       - name: Get Flutter SDK version
+  #         id: flutter-version
+  #         run: |
+  #           sdk_constraint=$(cat pubspec.yaml | yq .environment.flutter)
+  #           version=$(cat .fvmrc | jq -r .flutter)
+  #           echo "version=$version" >> "$GITHUB_OUTPUT"
+  code_check:
+    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_code_check.yaml@main
+    with:
+      needs-test-report: false
+  pull_request_release:
+    needs: code_check
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - name: 📦 Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+      - name: Check if release exists
+        id: check_release
+        run: |
+          RELEASE=$(gh release view ${{ inputs.package-name }}-v${{ inputs.package-version }} --json tagName -q .tagName || echo "not_found")
+          if [[ "$RELEASE" == "not_found" ]]; then
+            echo "CREATE_RELEASE=true" >> $GITHUB_OUTPUT
+          else
+            exit 1;
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set default branch
+        run: git remote set-head origin --auto
+        shell: bash
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff
+        working-directory: packages/${{ inputs.package-name }}
+        with:
+          config: ../../.github/cliff.toml
+          args: -vv --latest
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+      # - name: Append CHANGELOG
+      #   shell: bash
+      #   run: |
+      #     cat <<< "$(git log --grep="release*" --invert-grep --pretty=format:"- %s" $(git tag -n --sort=-version:refname "${{ inputs.package-name }}-v*" | head -n1 | xargs -L1)..HEAD packages/${{ inputs.package-name }})$(echo $'\r\n')$(echo $'\r\n')$(cat packages/${{ inputs.package-name }}/CHANGELOG.md)" > packages/${{ inputs.package-name }}/CHANGELOG.md
+      #     cat <<< "## ${{ inputs.package-version }}$(echo $'\r\n')$(echo $'\r\n')$(cat packages/${{ inputs.package-name }}/CHANGELOG.md)" > packages/${{ inputs.package-name }}/CHANGELOG.md
+      #     cat packages/${{ inputs.package-name }}/CHANGELOG.md
+
+      - name: 🔢 Set up version from tags
+        id: set-version
+        shell: bash
+        run: |
+          sed -i "s/^version:.*/version: ${{ inputs.package-version }}/" packages/${{ inputs.package-name }}/pubspec.yaml
+          ls -d packages/* | xargs -I{} sed -i "s/^  ${{ inputs.package-name }}: ^.*/  ${{ inputs.package-name }}: ^${{ inputs.package-version }}/" {}/pubspec.yaml
+          echo "Version set to ${{ inputs.package-version }}"
+
+      - name: Commit version update
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email github-actions[bot]@users.noreply.github.com
+          git checkout -b "release/${{ inputs.package-name }}/${{ inputs.package-version }}"
+          git commit -am "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
+          git push
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT }}
+          commit-message: "release(${{ inputs.package-version }}): v${{ inputs.package-version }}"
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          signoff: false
+          base: release/${{ inputs.package-name }}/${{ inputs.package-version }}
+          branch: publish
+          delete-branch: true
+          maintainer-can-modify: false
+          title: "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
+          labels: |
+            release
+          assignees: arxdeus
+          reviewers: arxdeus
+          draft: false
