@@ -43,9 +43,6 @@ jobs:
   pull_request_release:
     needs: code_check
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/${{ inputs.package-name }}
     permissions:
       id-token: write
       contents: write
@@ -75,16 +72,7 @@ jobs:
         id: git-cliff
         with:
           config: .github/cliff.toml
-        env:
-          OUTPUT: CHANGELOG.md
-          GITHUB_REPO: ${{ github.repository }}
-      # - name: Append CHANGELOG
-      #   shell: bash
-      #   run: |
-      #     cat <<< "$(git log --grep="release*" --invert-grep --pretty=format:"- %s" $(git tag -n --sort=-version:refname "${{ inputs.package-name }}-v*" | head -n1 | xargs -L1)..HEAD packages/${{ inputs.package-name }})$(echo $'\r\n')$(echo $'\r\n')$(cat packages/${{ inputs.package-name }}/CHANGELOG.md)" > packages/${{ inputs.package-name }}/CHANGELOG.md
-      #     cat <<< "## ${{ inputs.package-version }}$(echo $'\r\n')$(echo $'\r\n')$(cat packages/${{ inputs.package-name }}/CHANGELOG.md)" > packages/${{ inputs.package-name }}/CHANGELOG.md
-      #     cat packages/${{ inputs.package-name }}/CHANGELOG.md
-          # sed -i "s/^  ${{ inputs.package-name }}: ^.*/  ${{ inputs.package-name }}: ^${{ inputs.package-version }}/" pubspec.yaml
+          args: --tag ${{ inputs.package-name }} -u --prepend packages/${{ inputs.package-name }}/CHANGELOG.md --include-path "packages/${{ inputs.package-name }}/**/*" --exclude-path "**/*"
 
       - name: 🔢 Set up version from tags
         id: set-version
@@ -99,7 +87,6 @@ jobs:
           git config --global user.name github-actions[bot]
           git config --global user.email github-actions[bot]@users.noreply.github.com
           git checkout -b "release/${{ inputs.package-name }}/${{ inputs.package-version }}"
-          git add CHANGELOG.md
           git commit -am "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
           git push --set-upstream origin release/${{ inputs.package-name }}/${{ inputs.package-version }}
 
@@ -107,7 +94,6 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.PAT }}
           commit-message: "release(${{ inputs.package-version }}): v${{ inputs.package-version }}"
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           signoff: false
