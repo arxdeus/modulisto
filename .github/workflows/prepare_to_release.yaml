@@ -28,8 +28,12 @@ jobs:
     needs: code_check
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: write
+      contents: write      # required to merge PRs
+      id-token: write      # required for workload-identity-federation
+      checks: write
+      actions: read
+      pull-requests: write # required to post PR comments
+      statuses: write      # required to validate combined PR status
     steps:
       - name: 📦 Checkout the repo
         uses: actions/checkout@v4
@@ -79,7 +83,7 @@ jobs:
           source_branch: release/${{ inputs.package-name }}/${{ inputs.package-version }}
           target_branch: pubdev
           title: "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
-          body: ${{ steps.git-cliff.outputs.changelog }}
+          body: ${{ steps.git-cliff.outputs.content }}
           reviewer: arxdeus
           assignee: arxdeus
           label: release
