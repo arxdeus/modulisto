@@ -1,8 +1,8 @@
 name: Prepare to release
 permissions:
   contents: write
-  id-token: write
   actions: read
+  pull-requests: write
   checks: write
 on:
   workflow_dispatch:
