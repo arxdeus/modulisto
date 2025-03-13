@@ -74,8 +74,7 @@ jobs:
         uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
-          config: ../../.github/cliff.toml
-          args: -vv --latest
+          config: .github/cliff.toml
         env:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
@@ -96,11 +95,13 @@ jobs:
 
       - name: Commit version update
         run: |
+          set +e
           git config --global user.name github-actions[bot]
           git config --global user.email github-actions[bot]@users.noreply.github.com
           git checkout -b "release/${{ inputs.package-name }}/${{ inputs.package-version }}"
+          git add CHANGELOG.md
           git commit -am "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
-          git push
+          git push --set-upstream origin release/${{ inputs.package-name }}/${{ inputs.package-version }}
 
       - name: Create Pull Request
         id: cpr
