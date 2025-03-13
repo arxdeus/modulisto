@@ -80,7 +80,7 @@ jobs:
           target_branch: pubdev
           title: "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
           body: ${{ steps.git-cliff.outputs.changelog }}
-          reviewer: ${{ github.event.repository.owner }}
-          assignee: ${{ github.event.repository.owner }}
+          reviewer: arxdeus
+          assignee: arxdeus
           label: release
           ignore_users: "dependabot"
