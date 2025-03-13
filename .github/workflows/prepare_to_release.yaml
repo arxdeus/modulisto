@@ -83,7 +83,7 @@ jobs:
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           signoff: false
           base: release/${{ inputs.package-name }}/${{ inputs.package-version }}
-          branch: publish
+          branch: pubdev
           delete-branch: true
           maintainer-can-modify: false
           body: ${{ steps.git-cliff.outputs.changelog }}
