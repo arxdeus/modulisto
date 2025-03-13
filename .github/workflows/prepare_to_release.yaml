@@ -48,9 +48,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set default branch
-        run: git remote set-head origin --auto
-        shell: bash
       - name: Generate a changelog
         uses: orhun/git-cliff-action@v4
         id: git-cliff
