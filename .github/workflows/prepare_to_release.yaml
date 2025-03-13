@@ -1,9 +1,9 @@
 name: Prepare to release
 permissions:
   contents: write
+  checks: write
   actions: read
   pull-requests: write
-  checks: write
 on:
   workflow_dispatch:
     inputs:
@@ -20,22 +20,6 @@ on:
         required: true
 
 jobs:
-  # setup:
-  #     runs-on: ubuntu-latest
-  #     outputs:
-  #       flutter-version: ${{ steps.flutter-version.outputs.version }}
-  #     steps:
-  #       - name: 📦 Get the .github actions
-  #         uses: actions/checkout@v4
-  #         with:
-  #           sparse-checkout: |
-  #             .github
-  #       - name: Get Flutter SDK version
-  #         id: flutter-version
-  #         run: |
-  #           sdk_constraint=$(cat pubspec.yaml | yq .environment.flutter)
-  #           version=$(cat .fvmrc | jq -r .flutter)
-  #           echo "version=$version" >> "$GITHUB_OUTPUT"
   code_check:
     uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_code_check.yaml@main
     with:
@@ -72,13 +56,14 @@ jobs:
         id: git-cliff
         with:
           config: .github/cliff.toml
-          args: --tag ${{ inputs.package-name }} -u --prepend packages/${{ inputs.package-name }}/CHANGELOG.md --include-path "packages/${{ inputs.package-name }}/**/*" --exclude-path "**/*"
+          args: --tag ${{ inputs.package-version }} -u --prepend packages/${{ inputs.package-name }}/CHANGELOG.md --include-path "packages/${{ inputs.package-name }}/**/*" --exclude-path "**/*"
 
       - name: 🔢 Set up version from tags
         id: set-version
         shell: bash
         run: |
-          sed -i "s/^version:.*/version: ${{ inputs.package-version }}/" pubspec.yaml
+          sed -i "s/^version:.*/version: ${{ inputs.package-version }}/" packages/${{ inputs.package-name }}/pubspec.yaml
+          ls -d packages/* | xargs -I{} sed -i "s/^  ${{ inputs.package-name }}: ^.*/  ${{ inputs.package-name }}: ^${{ inputs.package-version }}/" {}/pubspec.yaml
           echo "Version set to ${{ inputs.package-version }}"
 
       - name: Commit version update
@@ -101,6 +86,7 @@ jobs:
           branch: publish
           delete-branch: true
           maintainer-can-modify: false
+          body: ${{ steps.git-cliff.outputs.changelog }}
           title: "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
           labels: |
             release
