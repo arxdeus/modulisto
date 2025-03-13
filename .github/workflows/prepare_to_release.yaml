@@ -75,21 +75,15 @@ jobs:
           git commit -am "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
           git push --set-upstream origin release/${{ inputs.package-name }}/${{ inputs.package-version }}
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v7
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@master
         with:
-          commit-message: "release(${{ inputs.package-version }}): v${{ inputs.package-version }}"
-          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
-          signoff: false
-          base: release/${{ inputs.package-name }}/${{ inputs.package-version }}
-          branch: pubdev
-          delete-branch: true
-          maintainer-can-modify: false
-          body: ${{ steps.git-cliff.outputs.changelog }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: release/${{ inputs.package-name }}/${{ inputs.package-version }}
+          target_branch: pubdev
           title: "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
-          labels: |
-            release
-          assignees: arxdeus
-          reviewers: arxdeus
-          draft: false
+          body: ${{ steps.git-cliff.outputs.changelog }}
+          reviewer: ${{ github.event.repository.owner }}
+          assignee: ${{ github.event.repository.owner }}
+          label: release
+          ignore_users: "dependabot"
