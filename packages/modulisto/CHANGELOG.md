@@ -1,3 +1,5 @@
+# Changelog
+
 ## 2.2.1
 
 * fix: remove unneccessary flutter sdk constraint in `pubspec.yaml`
