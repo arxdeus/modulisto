@@ -8,17 +8,8 @@ on:
     branches:
       - "*"
   pull_request:
-    types:
-      - opened
-      - edited
     branches:
-      - "main"
-      - "develop"
-      - "feature/**"
-      - "bugfix/**"
-      - "hotfix/**"
-      - "support/**"
-      - "release/**"
+      - "*"
     paths:
       - "**/pubspec.yaml"
       - "**/pubspec.lock"
