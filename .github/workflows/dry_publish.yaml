@@ -47,4 +47,6 @@ jobs:
 
     - name: "Run Dry Publish"
       shell: bash
-      run: flutter pub publish --dry-run
+      run: |
+        echo ${{ github.ref }}
+        flutter pub publish --dry-run
