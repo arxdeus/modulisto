@@ -14,10 +14,10 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     if: |
-      contains( github.event.pull_request.labels.*.name, 'release') &&
+      contains(github.event.issue.labels.*.name, 'release') &&
+      startsWith(github.event.comment.body, '/publish') &&
       github.event.issue.pull_request &&
-      contains(github.event.comment.body, '/publish') &&
-      (${{ github.event.comment.user.login }} == ${{ github.repository_owner }})
+      github.actor == github.repository_owner
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4

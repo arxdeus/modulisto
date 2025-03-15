@@ -9,7 +9,8 @@ on:
 jobs:
   code_check:
     if: |
+      contains(github.event.issue.labels.*.name, 'release') &&
+      startsWith(github.event.comment.body, '/check') &&
       github.event.issue.pull_request &&
-      contains(github.event.comment.body, '/codecheck') &&
-      (${{ github.event.comment.user.login }} == ${{ github.repository_owner }})
+      github.actor == github.repository_owner
     uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_code_check.yaml@main
