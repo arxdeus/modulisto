@@ -9,63 +9,81 @@ on:
       - 'release/**'
 
 jobs:
-  create_release:
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    if: |
-      contains( github.event.pull_request.labels.*.name, 'release') &&
-      github.event.issue.pull_request &&
-      contains(github.event.comment.body, '/publish') &&
-      (${{ github.event.comment.user.login }} == ${{ github.repository_owner }})
-    steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v4
-        with:
-          fetch-tags: true
-          fetch-depth: 0
-      - name: Fetch changelog
-        id: fetch-changelog
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh pr checkout ${{ github.event.issue.number }}
-          gh pr view \
-          --json body \
-          -q .body \
-          > RELEASE_CHANGELOG.md
-      - name: Merge pull request
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh pr merge \
-          ${{ github.event.issue.number }} \
-          --rebase
-      - name: Create tag
-        shell: bash
-        id: create-tag
-        run: |
-          git fetch --prune
-          git checkout main
-          git pull
-          PACKAGE_MESSAGE=$(git log -1 --format=%s)
-          PACKAGE_NAME=$(echo $PACKAGE_MESSAGE | sed 's/.*(//; s/).*//')
-          PACKAGE_VERSION=$(echo $PACKAGE_MESSAGE | sed 's/^[^: v]*: v//')
-          PACKAGE_TAG="$PACKAGE_NAME-v$PACKAGE_VERSION"
-          git tag ${PACKAGE_TAG}
-          git push origin ${PACKAGE_TAG}
-          git push origin -d release/${PACKAGE_NAME}/${PACKAGE_VERSION}
-          echo "package-tag=$PACKAGE_TAG" >> $GITHUB_OUTPUT
-      - name: Create release
-        id: create-release
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release create ${{ steps.create-tag.outputs.package-tag }} \
-          -F RELEASE_CHANGELOG.md \
-          --latest \
-          --verify-tag
-          rm -rf RELEASE_CHANGELOG.md
+ job01:
+   if: contains(github.event.comment.html_url, '/pull/')    # check if the comments come from pull request, exclude those from issue.
+   runs-on: ubuntu-latest
+   steps:
+    - name: say hello
+      if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
+      run: |
+       echo say hello
+    - name: test
+      if: |
+        contains( github.event.pull_request.labels.*.name, 'release') &&
+        github.event.issue.pull_request &&
+        contains(github.event.comment.html_url, '/pull/') &&
+        contains(github.event.comment.body, '/publish') &&
+        (${{ github.event.comment.user.login }} == ${{ github.repository_owner }})
+      run: |
+       echo test
+  # create_release:
+  #   permissions:
+  #     contents: write
+  #   runs-on: ubuntu-latest
+  #   if: |
+  #     contains( github.event.pull_request.labels.*.name, 'release') &&
+  #     github.event.issue.pull_request &&
+  #     contains(github.event.comment.html_url, '/pull/') &&
+  #     contains(github.event.comment.body, '/publish') &&
+  #     (${{ github.event.comment.user.login }} == ${{ github.repository_owner }})
+  #   steps:
+  #     - name: Checkout the repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-tags: true
+  #         fetch-depth: 0
+  #     - name: Fetch changelog
+  #       id: fetch-changelog
+  #       shell: bash
+  #       env:
+  #         GH_TOKEN: ${{ github.token }}
+  #       run: |
+  #         gh pr checkout ${{ github.event.issue.number }}
+  #         gh pr view \
+  #         --json body \
+  #         -q .body \
+  #         > RELEASE_CHANGELOG.md
+  #     - name: Merge pull request
+  #       shell: bash
+  #       env:
+  #         GH_TOKEN: ${{ github.token }}
+  #       run: |
+  #         gh pr merge \
+  #         ${{ github.event.issue.number }} \
+  #         --rebase
+  #     - name: Create tag
+  #       shell: bash
+  #       id: create-tag
+  #       run: |
+  #         git fetch --prune
+  #         git checkout main
+  #         git pull
+  #         PACKAGE_MESSAGE=$(git log -1 --format=%s)
+  #         PACKAGE_NAME=$(echo $PACKAGE_MESSAGE | sed 's/.*(//; s/).*//')
+  #         PACKAGE_VERSION=$(echo $PACKAGE_MESSAGE | sed 's/^[^: v]*: v//')
+  #         PACKAGE_TAG="$PACKAGE_NAME-v$PACKAGE_VERSION"
+  #         git tag ${PACKAGE_TAG}
+  #         git push origin ${PACKAGE_TAG}
+  #         git push origin -d release/${PACKAGE_NAME}/${PACKAGE_VERSION}
+  #         echo "package-tag=$PACKAGE_TAG" >> $GITHUB_OUTPUT
+  #     - name: Create release
+  #       id: create-release
+  #       shell: bash
+  #       env:
+  #         GH_TOKEN: ${{ github.token }}
+  #       run: |
+  #         gh release create ${{ steps.create-tag.outputs.package-tag }} \
+  #         -F RELEASE_CHANGELOG.md \
+  #         --latest \
+  #         --verify-tag
+  #         rm -rf RELEASE_CHANGELOG.md
