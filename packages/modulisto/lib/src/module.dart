@@ -55,6 +55,7 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
   @visibleForTesting
   void $addIntent<T>(UnitIntent<T, Object?> intent) {
     if (_intentController.isClosed) return;
+
     _intentController.add(intent);
   }
 
