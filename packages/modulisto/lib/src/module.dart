@@ -40,6 +40,7 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
   @override
   Future<void> dispose() async {
     _lifecycle.dispose();
+
     _isClosed = true;
 
     for (final dispose in $disposeQueue) {
