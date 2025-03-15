@@ -29,6 +29,7 @@ jobs:
         run: |
           echo "matrix=${{ steps.flutter-matrix.outputs.matrix }}"
   dry_publish:
+    needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJson(needs.setup.outputs.flutter-matrix) }}
