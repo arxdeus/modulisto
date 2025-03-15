@@ -27,10 +27,11 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Print output values
         run: |
-          echo "flutter-file-changed=${{ steps.filter.outputs.flutter-file-changed }}"
           echo "matrix=${{ steps.flutter-matrix.outputs.matrix }}"
   dry_publish:
     runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.flutter-matrix) }}
     steps:
     - name: "Checkout repository"
       uses: actions/checkout@v4
