@@ -80,12 +80,18 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr create \
-          --no-maintainer-edit \
-          -l "release" \
-          -F ${{ steps.git-cliff.outputs.changelog }} \
           -B main \
+          -l "release" \
+          --no-maintainer-edit \
+          -F ${{ steps.git-cliff.outputs.changelog }} \
           -H release/${{ inputs.package-name }}/${{ inputs.package-version }} \
           -t "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
+
+      - name: Run dry publish check
+        shell: bash
+        run: |
+          gh workflow run dry_publish.yaml -F package-name=${{ inputs.package-name }} -F package-version=${{ inputs.version }}
+          gh workflow run code_check.yaml
 
       - name: Clear release branch if pull request was not created
         shell: bash
