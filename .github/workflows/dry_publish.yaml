@@ -1,9 +1,9 @@
 name: Dry Run
 
 on:
-  push:
-    branches:
-      - "release/**/**"
+  # push:
+  #   branches:
+  #     - "release/**/**"
   pull_request:
     type: [opened]
     branches:
