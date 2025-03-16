@@ -69,3 +69,7 @@ jobs:
           --latest \
           --verify-tag
           rm -rf RELEASE_CHANGELOG.md
+      - name: Publish to pub.dev
+        shell: bash
+        run: |
+          gh workflow run on_tag_created.yaml -F package-name=$PACKAGE_NAME -F package-version=$PACKAGE_VERSION
