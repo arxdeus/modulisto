@@ -15,6 +15,7 @@ on:
       - "**/pubspec.lock"
       - "packages/**/lib/**.dart"
       - "packages/**/test/**.dart"
+      - "packages/**/CHANGELOG.md"
       - "example/**.dart"
 
 permissions:

@@ -5,6 +5,7 @@ on:
     branches:
       - "release/**/**"
   pull_request:
+    type: [opened]
     branches:
       - "release/**/**"
 
