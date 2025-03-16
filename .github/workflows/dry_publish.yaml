@@ -68,6 +68,6 @@ jobs:
       if: ${{ github.event_name == 'pull_request' || github.event_name == 'push'  }}
       run: |
         PACKAGE_BRANCH_RAW=${{ github.ref }}
-        PACKAGE_BRANCH_RAW=${PACKAGE_BRANCH_RAW//refs\/heads\/}
+        PACKAGE_BRANCH=${PACKAGE_BRANCH_RAW//refs\/heads\/}
         IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//release\/}
         cd packages/${PACKAGE_NAME} && flutter pub publish --dry-run
