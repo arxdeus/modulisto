@@ -29,7 +29,7 @@ jobs:
         run: |
           echo "matrix=${{ steps.flutter-matrix.outputs.matrix }}"
   dry_publish:
-    name: "Dry Publish"
+    name: "Dry Publish - ${{ strategy.job-index }}"
     needs: setup
     runs-on: ubuntu-latest
     strategy:
