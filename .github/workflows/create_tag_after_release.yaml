@@ -1,0 +1,64 @@
+name: Create tag after release
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'main'
+
+jobs:
+  create_release:
+    if: |
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'release/')
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+      - name: Fetch changelog
+        id: fetch-changelog
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr checkout ${{ github.event.pull_request.number }}
+          gh pr view \
+          --json body \
+          -q .body \
+          > RELEASE_CHANGELOG.m
+      - name: Parse meta
+        shell: bash
+        id: parse-meta
+        run: |
+          PACKAGE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//release\/}
+          echo "package-name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
+          echo "package-version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+          echo "package-tag=${PACKAGE_NAME}-v${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+      - name: Create tag
+        shell: bash
+        id: create-tag
+        run: |
+          git fetch --prune
+          git checkout main
+          git pull
+          git tag ${{ steps.parse-meta.outputs.package-tag }}
+          git push origin ${{ steps.parse-meta.outputs.package-tag }}
+          git push origin -d release/${{ steps.parse-meta.outputs.package-name }}/${{ steps.parse-meta.outputs.package-version }}
+      - name: Create release
+        id: create-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create ${{ steps.parse-meta.outputs.package-tag }} \
+          -F RELEASE_CHANGELOG.md \
+          --latest \
+          --verify-tag
+          rm -rf RELEASE_CHANGELOG.md

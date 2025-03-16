@@ -1,0 +1,95 @@
+name: Prepare to release
+permissions:
+  contents: write
+  checks: write
+  actions: read
+  pull-requests: write
+on:
+  workflow_dispatch:
+    inputs:
+      package-name:
+        type: choice
+        description: Which package to publish
+        required: true
+        options:
+        - modulisto
+        - modulisto_flutter
+      package-version:
+        type: string
+        default: '0.0.0'
+        required: true
+
+jobs:
+  pull_request_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # required to merge PRs
+      checks: write
+      actions: read
+      pull-requests: write
+    steps:
+      - name: Check if release exists
+        id: check_release
+        run: |
+          RELEASE=$(gh release view ${{ inputs.package-name }}-v${{ inputs.package-version }} --json tagName -q .tagName || echo "not_found")
+          if [[ "$RELEASE" == "not_found" ]]; then
+            echo "CREATE_RELEASE=true" >> $GITHUB_OUTPUT
+          else
+            exit 1;
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 📦 Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v4
+        id: git-cliff
+        with:
+          config: .github/cliff.toml
+          args: |
+            -u \
+            --tag ${{ inputs.package-version }} \
+            --prepend packages/${{ inputs.package-name }}/CHANGELOG.md \
+            --include-path=packages/${{ inputs.package-name }}/** \
+            origin/main..$(git describe --tags --match="${{ inputs.package-name }}-v*" origin/main)
+
+      - name: Set up version from tags
+        id: set-version
+        shell: bash
+        run: |
+          sed -i "s/^version:.*/version: ${{ inputs.package-version }}/" packages/${{ inputs.package-name }}/pubspec.yaml
+          ls -d packages/* | xargs -I{} sed -i "s/^  ${{ inputs.package-name }}: ^.*/  ${{ inputs.package-name }}: ^${{ inputs.package-version }}/" {}/pubspec.yaml
+          echo "Version set to ${{ inputs.package-version }}"
+
+      - name: Commit version update
+        run: |
+          set +e
+          git config --global user.name github-actions[bot]
+          git config --global user.email github-actions[bot]@users.noreply.github.com
+          git checkout -b "release/${{ inputs.package-name }}/${{ inputs.package-version }}"
+          git commit -am "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
+          git push --set-upstream origin release/${{ inputs.package-name }}/${{ inputs.package-version }}
+
+      - name: Create pull request
+        id: create-pr
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create \
+          -B main \
+          -l "release" \
+          --no-maintainer-edit \
+          -F ${{ steps.git-cliff.outputs.changelog }} \
+          -H release/${{ inputs.package-name }}/${{ inputs.package-version }} \
+          -t "release(${{ inputs.package-name }}): v${{ inputs.package-version }}"
+
+      - name: Clear release branch if pull request was not created
+        shell: bash
+        if: failure() && steps.create-pr.outcome == 'failure'
+        run: |
+          git push origin -d \
+          release/${{ inputs.package-name }}/${{ inputs.package-version }}

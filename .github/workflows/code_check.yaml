@@ -2,23 +2,10 @@ name: Checkout
 
 on:
   workflow_dispatch:
+  workflow_call:
   push:
     branches:
-      - "main"
-  pull_request:
-    branches:
-      - "main"
-      - "develop"
-      - "feature/**"
-      - "bugfix/**"
-      - "hotfix/**"
-      - "support/**"
-    paths:
-      - "**/pubspec.yaml"
-      - "**/pubspec.lock"
-      - "packages/**/lib/**.dart"
-      - "packages/**/test/**.dart"
-      - "example/**.dart"
+      - "**"
 
 permissions:
   contents: read
