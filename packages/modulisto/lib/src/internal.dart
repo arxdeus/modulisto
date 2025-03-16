@@ -23,6 +23,7 @@ abstract class ModuleBase implements DisposerHolder {
 
   @override
   abstract final Queue<FutureOr<void> Function()> $disposeQueue;
+  
   abstract final Stream<RawUnitIntent> $intentStream;
   void $addIntent<T>(UnitIntent<T, Object?> intent);
 }
