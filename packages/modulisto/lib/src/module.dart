@@ -45,6 +45,7 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
     for (final dispose in $disposeQueue) {
       await dispose();
     }
+
     await _intentController.close();
     super.dispose();
   }
