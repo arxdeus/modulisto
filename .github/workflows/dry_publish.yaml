@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - "release/**"
-  pull_request:
-    types:
-      - opened
-      - reopened
-    branches:
-      - 'main'
+  workflow_run:
+    workflows: [Prepare to release]
+    types: [completed]
+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -50,8 +48,8 @@ jobs:
 
     - name: "Run Dry Publish"
       shell: bash
-      if: ${{ github.event_name == 'pull_request' ||  github.event_name == 'push' }}
+      if: ${{ github.event_name == 'workflow_run' ||  github.event_name == 'push' }}
       run: |
-        PACKAGE_BRANCH=${{ github.head_ref || github.ref_name }}
+        PACKAGE_BRANCH=${{ github.event.workflow_run.head_branch || github.ref_name }}
         IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//release\/}
         cd packages/${PACKAGE_NAME} && flutter pub publish --dry-run

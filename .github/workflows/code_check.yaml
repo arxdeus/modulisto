@@ -2,7 +2,16 @@ name: Checkout
 
 on:
   workflow_dispatch:
-  workflow_call:
+  workflow_run:
+    workflows: [Prepare to release]
+    types: [completed]
+
+  pull_request:
+    types:
+      - opened
+      - reopened
+    branches:
+      - 'main'
   push:
     branches:
       - "**"
