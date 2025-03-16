@@ -77,7 +77,7 @@ jobs:
         id: create-pr
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.PAT }}
         run: |
           gh pr create \
           -B main \
