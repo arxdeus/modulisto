@@ -33,7 +33,7 @@ jobs:
           gh pr view \
           --json body \
           -q .body \
-          > RELEASE_CHANGELOG.m
+          > RELEASE_CHANGELOG.md
       - name: Parse meta
         shell: bash
         id: parse-meta
@@ -57,7 +57,7 @@ jobs:
         id: create-release
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github. }}
         run: |
           gh release create ${{ steps.parse-meta.outputs.package-tag }} \
           -F RELEASE_CHANGELOG.md \
