@@ -2,17 +2,14 @@ name: Checkout
 
 on:
   workflow_dispatch:
+  merge_group:
+    types: [checks_requested]
   push:
     branches:
       - "*"
   pull_request:
     branches:
-      - "main"
-      - "develop"
-      - "feature/**"
-      - "bugfix/**"
-      - "hotfix/**"
-      - "support/**"
+      - "*"
     paths:
       - "**/pubspec.yaml"
       - "**/pubspec.lock"
