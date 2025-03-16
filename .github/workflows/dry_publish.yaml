@@ -9,7 +9,7 @@ on:
       - edited
     branches:
       - 'release/**/**'
-  workflow_call:
+  workflow_dispatch:
     inputs:
       package-name:
         required: true
