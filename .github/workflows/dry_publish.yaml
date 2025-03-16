@@ -49,5 +49,5 @@ jobs:
       shell: bash
       run: |
         PACKAGE_BRANCH=${{ github.ref }}
-        IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//ref\/heads\/release\/}
+        IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//refs\/heads\/release\/}
         cd packages/${PACKAGE_NAME} && flutter pub publish --dry-run
