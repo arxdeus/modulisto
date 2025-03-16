@@ -39,8 +39,6 @@ jobs:
       - name: Print output values
         run: |
           echo "matrix=${{ steps.flutter-matrix.outputs.matrix }}"
-  code_check:
-    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_code_check.yaml@main
   dry_publish:
     name: "Dry Publish - ${{ strategy.job-index }}"
     needs: setup
