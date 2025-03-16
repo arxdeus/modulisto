@@ -59,6 +59,7 @@ void main() {
     test('ensure that internal triggers of operation are disposed after module dispose', () async {
       final dummy = DummyModule();
 
+      // ignore: unused_element
       Future<int> _(int test) => dummy.runOperation(#test1, () => Future.value(test));
 
       final pipeline = Pipeline.sync(
