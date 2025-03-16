@@ -1,0 +1,57 @@
+name: Dry Run
+
+on:
+  push:
+    branches:
+      - "release/**"
+  pull_request:
+    types:
+      - opened
+      - reopened
+    branches:
+      - 'main'
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      flutter-matrix: ${{ steps.flutter-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Get Flutter SDK version constraints and packages"
+        id: flutter-matrix
+        # Extract the lower bound from pubspec.yaml and the upper bound from .fvmrc
+        run: |
+          {
+            echo 'matrix<<EOF'
+            jq -cn  --argjson flutter-version "[\"$(cat .fvmrc | jq -r .flutter)\"]" '$ARGS.named'
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: Print output values
+        run: |
+          echo "matrix=${{ steps.flutter-matrix.outputs.matrix }}"
+  dry_publish:
+    name: "Dry Publish - ${{ strategy.job-index }}"
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.setup.outputs.flutter-matrix) }}
+    steps:
+    - name: "Checkout repository"
+      uses: actions/checkout@v4
+      with:
+        fetch-tags: true
+        fetch-depth: 0
+
+    - name: "Setup (Flutter ${{ matrix.flutter-version }})"
+      uses: arxdeus/github_workflows/actions/flutter_setup@main
+      with:
+        flutter-version: ${{ matrix.flutter-version }}
+
+    - name: "Run Dry Publish"
+      shell: bash
+      if: ${{ github.event_name == 'pull_request' ||  github.event_name == 'push' }}
+      run: |
+        PACKAGE_BRANCH=${{ github.head_ref || github.ref_name }}
+        IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//release\/}
+        cd packages/${PACKAGE_NAME} && flutter pub publish --dry-run
