@@ -2,12 +2,10 @@ name: Checkout
 
 on:
   workflow_dispatch:
+  workflow_call:
   push:
     branches:
       - "**"
-  pull_request:
-    branches:
-      - '**'
 
 permissions:
   contents: read

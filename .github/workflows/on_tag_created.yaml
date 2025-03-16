@@ -52,8 +52,7 @@ jobs:
     - name: "Run Dry Publish"
       shell: bash
       run: |
-        IFS=-v read -r PACKAGE_NAME PACKAGE_VERSION <<< ${{ github.ref_name }}
-        cd packages/${PACKAGE_NAME} && flutter pub publish --dry-run
+        cd packages/${{ inputs.package-name }} && flutter pub publish --dry-run
 
     - name: Setup OIDC token
       uses: dart-lang/setup-dart@v1

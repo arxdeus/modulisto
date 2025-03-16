@@ -5,8 +5,16 @@ on:
     types:
       - opened
       - reopened
+      - synchronize
+      - edited
     branches:
       - 'release/**/**'
+  workflow_call:
+    inputs:
+      package-name:
+        required: true
+      package-version:
+        required: true
 
 jobs:
   setup:
@@ -28,6 +36,8 @@ jobs:
       - name: Print output values
         run: |
           echo "matrix=${{ steps.flutter-matrix.outputs.matrix }}"
+  code_check:
+    uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_code_check.yaml@main
   dry_publish:
     name: "Dry Publish - ${{ strategy.job-index }}"
     needs: setup
@@ -46,8 +56,15 @@ jobs:
       with:
         flutter-version: ${{ matrix.flutter-version }}
 
-    - name: "Run Dry Publish"
+    - name: "Run Dry Publish (${{ inputs.package-name }}, ${{ inputs.package-version }})"
       shell: bash
+      if: ${{ github.event_name == 'workflow_call' }}
+      run: |
+        cd packages/${{ inputs.package-name }} && flutter pub publish --dry-run
+
+    - name: "Run Dry Publish (init on ${{ github.ref }})"
+      shell: bash
+      if: ${{ github.event_name == 'pull_request' }}
       run: |
         PACKAGE_BRANCH=${{ github.ref }}
         IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//refs\/heads\/release\/}
