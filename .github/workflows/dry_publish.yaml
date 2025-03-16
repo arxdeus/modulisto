@@ -8,17 +8,8 @@ on:
     types:
       - opened
       - reopened
-      - synchronize
-      - edited
     branches:
-      - 'release/**'
-  workflow_dispatch:
-    inputs:
-      package-name:
-        required: true
-      package-version:
-        required: true
-
+      - 'main'
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -27,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get Flutter SDK version constraints and packages
+      - name: "Get Flutter SDK version constraints and packages"
         id: flutter-matrix
         # Extract the lower bound from pubspec.yaml and the upper bound from .fvmrc
         run: |
@@ -57,17 +48,10 @@ jobs:
       with:
         flutter-version: ${{ matrix.flutter-version }}
 
-    - name: "Run Dry Publish (${{ inputs.package-name }}, ${{ inputs.package-version }})"
+    - name: "Run Dry Publish"
       shell: bash
-      if: ${{ github.event_name == 'workflow_call' }}
+      if: ${{ github.event_name == 'pull_request' ||  github.event_name == 'push' }}
       run: |
-        cd packages/${{ inputs.package-name }} && flutter pub publish --dry-run
-
-    - name: "Run Dry Publish (init on ${{ github.ref }})"
-      shell: bash
-      if: ${{ github.event_name == 'pull_request' || github.event_name == 'push'  }}
-      run: |
-        PACKAGE_BRANCH_RAW=${{ github.ref }}
-        PACKAGE_BRANCH=${PACKAGE_BRANCH_RAW//refs\/heads\/}
+        PACKAGE_BRANCH=${{ github.head_ref || github.ref_name }}
         IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//release\/}
         cd packages/${PACKAGE_NAME} && flutter pub publish --dry-run
