@@ -3,7 +3,7 @@ name: Dry Run
 on:
   push:
     branches:
-      - "release/**/**"
+      - "release/**"
   pull_request:
     types:
       - opened
@@ -11,7 +11,7 @@ on:
       - synchronize
       - edited
     branches:
-      - 'release/**/**'
+      - 'release/**'
   workflow_dispatch:
     inputs:
       package-name:
