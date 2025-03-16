@@ -10,13 +10,6 @@ on:
   pull_request:
     branches:
       - "*"
-    paths:
-      - "**/pubspec.yaml"
-      - "**/pubspec.lock"
-      - "packages/**/lib/**.dart"
-      - "packages/**/test/**.dart"
-      - "packages/**/CHANGELOG.md"
-      - "example/**.dart"
 
 permissions:
   contents: read

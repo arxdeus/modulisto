@@ -1,15 +1,12 @@
 name: Dry Run
 
 on:
-  # push:
-  #   branches:
-  #     - "release/**/**"
   pull_request:
-    type: [opened]
+    types:
+      - opened
     branches:
-      - "release/**/**"
+      - 'releases/**/**'
 
-jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
