@@ -48,9 +48,6 @@ jobs:
     - name: "Run Dry Publish"
       shell: bash
       run: |
-        echo ${{ github.base_ref }}
-        echo ${{ github.head_ref }}
-        # PACKAGE_BRANCH=${{ github.ref }}
-        # PACKAGE_BRANCH=${PACKAGE_BRANCH//ref/}
-        # IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<<
-        flutter pub publish --dry-run
+        PACKAGE_BRANCH=${{ github.ref }}
+        IFS=/ read -r PACKAGE_NAME PACKAGE_VERSION <<< ${PACKAGE_BRANCH//ref\/heads\/release\/}
+        cd packages/${PACKAGE_NAME} && flutter pub publish --dry-run
