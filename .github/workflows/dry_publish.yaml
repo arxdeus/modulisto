@@ -11,7 +11,7 @@ on:
       - synchronize
       - edited
     branches:
-      - 'release/**'
+      - 'main'
   workflow_dispatch:
     inputs:
       package-name:
