@@ -7,6 +7,7 @@ export 'src/interfaces.dart' hide Disposable;
 export 'src/module.dart';
 export 'src/settings.dart';
 export 'src/transformers.dart';
+export 'src/unit/pipeline/linker/operation_linker.dart';
 export 'src/unit/pipeline/linker/stream_linker.dart';
 export 'src/unit/pipeline/linker/unit_linker.dart';
 export 'src/unit/pipeline/pipeline.dart' hide PipelineUnit;

@@ -73,9 +73,9 @@ void main() {
       final module = createModule(eventTransformer: eventTransformers.sequental);
 
       final _ = UnitAdapter(module.increment).stream();
-      expect(UnitToStreamAdapter.linkedControllers[module.increment], isNotNull);
+      expect(UnitToStreamAdapter.$linkedControllers[module.increment], isNotNull);
       await module.dispose();
-      expect(UnitToStreamAdapter.linkedControllers[module.increment], isNull);
+      expect(UnitToStreamAdapter.$linkedControllers[module.increment], isNull);
     });
 
     test('ensure that no new features created after module dispose', () async {
@@ -83,7 +83,7 @@ void main() {
       await module.dispose();
       final stream = UnitAdapter(module.increment).stream();
       expect(stream, emitsDone);
-      expect(UnitToStreamAdapter.linkedControllers[module.increment], isNull);
+      expect(UnitToStreamAdapter.$linkedControllers[module.increment], isNull);
     });
     test('ensure that stream associated with unit is closed after module dispose', () async {
       final module = createModule(eventTransformer: eventTransformers.sequental);
@@ -92,11 +92,11 @@ void main() {
             null,
             onDone: () => isDone = true,
           );
-      final controller = UnitToStreamAdapter.linkedControllers[module.increment];
+      final controller = UnitToStreamAdapter.$linkedControllers[module.increment];
       expect(controller?.isClosed, isFalse);
-      expect(UnitToStreamAdapter.linkedControllers[module.increment], isNotNull);
+      expect(UnitToStreamAdapter.$linkedControllers[module.increment], isNotNull);
       await module.dispose();
-      expect(UnitToStreamAdapter.linkedControllers[module.increment], isNull);
+      expect(UnitToStreamAdapter.$linkedControllers[module.increment], isNull);
       expect(isDone, isTrue);
       expect(controller?.isClosed, isTrue);
       await sub.cancel();

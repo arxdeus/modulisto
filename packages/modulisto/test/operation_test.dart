@@ -12,7 +12,7 @@ void main() {
       final trigger = Trigger<int>(dummy);
       final store = Store<int>(dummy, 0);
 
-      Future<int> someNumber(int test) => dummy.runOperation(#test1, () => Future.value(test));
+      Future<int> someNumber(int test) => dummy.runOperation(someNumber, () => Future.value(test));
 
       final pipeline = Pipeline.sync(
         dummy,
@@ -20,7 +20,7 @@ void main() {
           ..unit(trigger).bind(
             (context, value) => context.update(store, value),
           )
-          ..operationOnType<int>(#test1).redirect(trigger.call),
+          ..operationOnType<int>(someNumber).redirect(trigger.call),
       );
 
       Module.initialize(dummy, attach: {pipeline});
@@ -36,7 +36,7 @@ void main() {
       final trigger = Trigger<int>(dummy);
       final store = Store<int>(dummy, 0);
 
-      Future<int> someNumber(int test) => dummy.runOperation(#test1, () => Future.value(test));
+      Future<int> someNumber(int test) => dummy.runOperation(someNumber, () => Future.value(test));
 
       final pipeline = Pipeline.sync(
         dummy,
@@ -44,7 +44,7 @@ void main() {
           ..unit(trigger).bind(
             (context, value) => context.update(store, value),
           )
-          ..operationOnType<int>(#test1).redirect(trigger.call),
+          ..operationOnType<int>(someNumber).redirect(trigger.call),
       );
 
       Module.initialize(dummy, attach: {pipeline});
@@ -60,11 +60,11 @@ void main() {
       final dummy = DummyModule();
 
       // ignore: unused_element
-      Future<int> _(int test) => dummy.runOperation(#test1, () => Future.value(test));
+      Future<int> test1(int test) => dummy.runOperation(test1, () => Future.value(test));
 
       final pipeline = Pipeline.sync(
         dummy,
-        ($) => $..operationOnType<int>(#test1).redirect((_) {}),
+        ($) => $..operationOnType<int>(test1).redirect((_) {}),
       );
 
       Module.initialize(dummy, attach: {pipeline});
@@ -72,7 +72,7 @@ void main() {
       await dummy.dispose();
 
       expect(dummy.isClosed, isTrue);
-      expect(OperationRunner.operationRunners[dummy], isNull);
+      expect(OperationRunner.$operationRunners[test1], isNull);
     });
   });
 }

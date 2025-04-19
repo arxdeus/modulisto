@@ -9,7 +9,7 @@ import 'package:modulisto/modulisto.dart';
 class ListenableAdapter implements Listenable {
   ListenableAdapter(this._unit);
 
-  final UnitNotifier<Object?> _unit;
+  final Notifier<Object?> _unit;
   late final _realListeners = <VoidCallback>[];
 
   @override

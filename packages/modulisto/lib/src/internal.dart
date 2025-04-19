@@ -6,8 +6,8 @@ import 'package:modulisto/src/interfaces.dart';
 
 @internal
 abstract class Named {
-  /// [$debugName] will appear in logs instead of [runtimeType]
-  String? get $debugName;
+  /// [debugName] will appear in logs instead of [runtimeType]
+  String? get debugName;
 }
 
 @internal
@@ -16,7 +16,7 @@ typedef RawUnit = Unit<Object?>;
 typedef RawUnitIntent = UnitIntent<dynamic, Object?>;
 
 @internal
-abstract class ModuleBase implements DisposerHolder {
+abstract class ModuleBase implements DisposeQueue {
   void attach(covariant Attachable attachable) => attachable.attachToModule(this);
 
   bool get isClosed;
@@ -58,13 +58,13 @@ abstract class Attachable {
   void attachToModule(ModuleBase module);
 }
 
-abstract class DisposerHolder {
+abstract class DisposeQueue {
   @internal
   Queue<FutureOr<void> Function()> get $disposeQueue;
 }
 
 @internal
-abstract class PipelineRef implements ModuleChild, IntentHandler, DisposerHolder {
+mixin PipelineRef implements ModuleChild, IntentHandler, DisposeQueue {
   @override
   @internal
   ModuleBase get $module;
@@ -72,4 +72,9 @@ abstract class PipelineRef implements ModuleChild, IntentHandler, DisposerHolder
   @override
   @internal
   Queue<FutureOr<void> Function()> get $disposeQueue;
+}
+
+@internal
+abstract class PipelineRefHost {
+  PipelineRef get $pipelineRef;
 }

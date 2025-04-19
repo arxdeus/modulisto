@@ -5,24 +5,13 @@ import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/transformers.dart';
-import 'package:modulisto/src/unit/pipeline/linker/operation_linker.dart';
-import 'package:modulisto/src/unit/pipeline/linker/stream_linker.dart';
-import 'package:modulisto/src/unit/pipeline/linker/unit_linker.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_task.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-abstract interface class AsyncPipelineRef implements PipelineRef {}
-
-extension AsyncPipelineExt on AsyncPipelineRef {
-  UnitPipelineLinker<T> unit<T>(Unit<T> unit) => UnitPipelineLinker(unit, this);
-  StreamPipelineLinker<T> stream<T>(Stream<T> stream) => StreamPipelineLinker(stream, this);
-  OperationPipelineLinker<T> operationOnType<T>(Symbol operationId) => OperationPipelineLinker(operationId, this);
-}
-
 @internal
-final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, IntentHandler {
+final class AsyncPipeline extends PipelineUnit implements PipelineRef, IntentHandler {
   AsyncPipeline(
     super.module,
     this.pipelineRegister, {
@@ -30,7 +19,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
     EventTransformer? transformer,
   }) : _transformer = transformer ?? eventTransformers.concurrent;
 
-  final void Function(AsyncPipelineRef pipeline) pipelineRegister;
+  final void Function(PipelineRef pipeline) pipelineRegister;
   final EventTransformer _transformer;
 
   late final List<Future<void>> _pendingEvents = [];
@@ -114,5 +103,5 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   }
 
   @override
-  String toString() => 'AsyncPipeline(debugName: ${$debugName}, module: ${$module})';
+  String toString() => 'AsyncPipeline(debugName: $debugName, module: ${$module})';
 }

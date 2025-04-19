@@ -5,22 +5,21 @@ import 'package:modulisto/src/unit/pipeline/type/async_pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/type/sync_pipeline.dart';
 import 'package:modulisto/src/unit/unit.dart';
 
-typedef AsyncPipelineRegisterCallback = void Function(AsyncPipelineRef $);
-typedef SyncPipelineRegisterCallback = void Function(SyncPipelineRef $);
+typedef PipelineRegisterCallback = void Function(PipelineRef on);
 
 @internal
-abstract base class PipelineUnit extends UnitImpl<Object?> implements Pipeline, Disposable {
+abstract base class PipelineUnit extends UnitBase<Object?> implements Pipeline, Disposable {
   PipelineUnit(
     super.module, {
-    String? debugName,
-  }) : super($debugName: debugName);
+    super.debugName,
+  });
 }
 
 abstract class Pipeline implements Attachable {
   /// Pipeline that handles incoming events synchronously, without any queuing mechanism
   factory Pipeline.sync(
     ModuleBase module,
-    SyncPipelineRegisterCallback pipelineRegister, {
+    PipelineRegisterCallback pipelineRegister, {
     String? debugName,
   }) = SyncPipeline;
 
@@ -28,7 +27,7 @@ abstract class Pipeline implements Attachable {
   /// and allows to create complex event queue
   factory Pipeline.async(
     ModuleBase module,
-    AsyncPipelineRegisterCallback pipelineRegister, {
+    PipelineRegisterCallback pipelineRegister, {
     EventTransformer? transformer,
     String? debugName,
   }) = AsyncPipeline;

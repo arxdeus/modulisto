@@ -4,20 +4,24 @@ import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 
-class StreamPipelineLinker<T> implements PipelineLinker<Stream<T>, T> {
+extension StreamPipelineLinkerExt on PipelineRef {
+  StreamPipelineLinker<T> stream<T>(Stream<T> stream) => StreamPipelineLinker._(stream, this);
+}
+
+class StreamPipelineLinker<T> implements PipelineLinker<Stream<T>, T>, PipelineRefHost {
   final Stream<T> _stream;
 
   @override
   @internal
   @protected
-  final PipelineRef pipelineRef;
+  final PipelineRef $pipelineRef;
 
-  StreamPipelineLinker(this._stream, this.pipelineRef);
+  StreamPipelineLinker._(this._stream, this.$pipelineRef);
 
   @override
   void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
-    final sub = _stream.listen(pipelineRef.$handle(_stream, handler));
-    pipelineRef.$disposeQueue.add(sub.cancel);
+    final sub = _stream.listen($pipelineRef.$handle(_stream, handler));
+    $pipelineRef.$disposeQueue.add(sub.cancel);
   }
 
   @override

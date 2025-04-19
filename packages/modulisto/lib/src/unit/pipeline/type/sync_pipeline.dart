@@ -4,22 +4,11 @@ import 'dart:collection';
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
-import 'package:modulisto/src/unit/pipeline/linker/operation_linker.dart';
-import 'package:modulisto/src/unit/pipeline/linker/stream_linker.dart';
-import 'package:modulisto/src/unit/pipeline/linker/unit_linker.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 
-abstract interface class SyncPipelineRef implements PipelineRef {}
-
-extension SyncPipelineExt on SyncPipelineRef {
-  UnitPipelineLinker<T> unit<T>(Unit<T> unit) => UnitPipelineLinker(unit, this);
-  StreamPipelineLinker<T> stream<T>(Stream<T> stream) => StreamPipelineLinker(stream, this);
-  OperationPipelineLinker<T> operationOnType<T>(Symbol operationId) => OperationPipelineLinker(operationId, this);
-}
-
 @internal
-final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, IntentHandler {
+final class SyncPipeline extends PipelineUnit implements PipelineRef, IntentHandler {
   SyncPipeline(
     super.module,
     this.pipelineRegister, {
@@ -52,8 +41,8 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
     super.dispose();
   }
 
-  final void Function(SyncPipelineRef pipeline) pipelineRegister;
+  final void Function(PipelineRef pipeline) pipelineRegister;
 
   @override
-  String toString() => 'SyncPipeline(debugName: ${$debugName}, module: ${$module})';
+  String toString() => 'SyncPipeline(debugName: $debugName, module: ${$module})';
 }

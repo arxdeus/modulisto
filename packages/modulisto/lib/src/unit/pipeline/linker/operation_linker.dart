@@ -7,15 +7,22 @@ import 'package:modulisto/src/operation.dart';
 import 'package:modulisto/src/settings.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
-class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T> {
-  final Symbol _operationId;
+extension OperationLinkerPipelineExt on PipelineRef {
+  OperationPipelineLinker<T> operationOnType<T>(Function operationId) => OperationPipelineLinker._(
+        operationId,
+        this,
+      );
+}
+
+class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T>, PipelineRefHost {
+  final Function _sourceFunction;
 
   @override
   @internal
   @protected
-  final PipelineRef pipelineRef;
+  final PipelineRef $pipelineRef;
 
-  OperationPipelineLinker(this._operationId, this.pipelineRef)
+  OperationPipelineLinker._(this._sourceFunction, this.$pipelineRef)
       : assert(
           T != dynamic,
           '.operationOnType<T> requires generic type for proper work',
@@ -23,20 +30,27 @@ class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T> {
 
   @override
   void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
-    final callback = pipelineRef.$handle(_operationId, handler);
-    final moduleMap = OperationRunner.operationRunners[pipelineRef.$module] ??= {};
+    final callback = $pipelineRef.$handle(_sourceFunction, handler);
+    final trigger = OperationRunner.$operationRunners[_sourceFunction] ??= Trigger<Object?>(
+      $pipelineRef.$module,
+      debugName: 'OperationTrigger(${identityHashCode(_sourceFunction).toRadixString(16)})',
+    );
 
-    (moduleMap[_operationId] ??= Trigger<Object?>(pipelineRef.$module, debugName: 'OperationTrigger($_operationId)'))
-        .addListener((value) {
+    // ignore: cascade_invocations
+    trigger.addListener((value) {
       if (ModulistoSettings.debugReportTypeMismatchOnOperation) {
         assert(
           value.runtimeType == T,
-          'Type mismatch on Operation($_operationId), expected: $T, got: ${value.runtimeType} ',
+          'Type mismatch on Operation(id: ${trigger.debugName}, source: $_sourceFunction), expected: $T, got: ${value.runtimeType} ',
         );
       }
       if (value.runtimeType != T) return;
       callback(value as T);
     });
+
+    $pipelineRef.$disposeQueue.addLast(
+      () => OperationRunner.$operationRunners.remove(_sourceFunction),
+    );
   }
 
   @override

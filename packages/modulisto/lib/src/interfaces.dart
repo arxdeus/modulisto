@@ -23,11 +23,7 @@ typedef ModuleLifecycle = ({
   Unit<()> dispose,
 });
 
-abstract interface class Unit<T> implements Named, ModuleChild, UnitNotifier<T>, Disposable {
-  @override
-  @internal
-  ModuleBase get $module;
-
+abstract interface class Unit<T> implements Named, ModuleChild, Notifier<T>, Disposable {
   @override
   @internal
   FutureOr<void> dispose();
@@ -39,7 +35,7 @@ abstract class ValueUnit<T> implements Unit<T> {
 }
 
 @protected
-abstract interface class UnitNotifier<T> {
+abstract interface class Notifier<T> {
   @protected
   void notifyUpdate(T payload);
   void addListener(ValueChanged<T> callback);
@@ -49,10 +45,6 @@ abstract interface class UnitNotifier<T> {
 /* Pipeline */
 
 abstract interface class PipelineLinker<C, T> {
-  @internal
-  @protected
-  abstract final PipelineRef pipelineRef;
-
   /// Binds a notifies from `source` into handler callback
   /// Allow `Store` mutation via `PipelineContext` in [handler]
   void bind(FutureOr<void> Function(PipelineContext context, T value) handler);

@@ -6,23 +6,23 @@ import 'package:modulisto/src/interfaces.dart';
 extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
   @internal
   @visibleForTesting
-  static final Expando<StreamController<Object?>> linkedControllers = Expando();
+  static final Expando<StreamController<Object?>> $linkedControllers = Expando();
 
   Stream<T> stream() {
     if (unit.$module.isClosed) return const Stream.empty();
 
-    final linkedController = linkedControllers[unit] as StreamController<T>?;
+    final linkedController = $linkedControllers[unit] as StreamController<T>?;
     final hasControllerBefore = linkedController != null;
-    final StreamController<T> controller = linkedController ?? StreamController<T>.broadcast();
+    final controller = linkedController ?? StreamController<T>.broadcast(sync: true);
 
     if (!hasControllerBefore) {
       void callback(T value) => controller.add(value);
-      linkedControllers[unit] = controller;
+      $linkedControllers[unit] = controller;
 
       unit
         ..addListener(callback)
         ..$module.$disposeQueue.add(() {
-          linkedControllers[unit] = null;
+          $linkedControllers[unit] = null;
 
           unit.removeListener(callback);
           controller.close();

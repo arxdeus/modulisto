@@ -4,7 +4,20 @@ abstract class TestInterface {
   Future<int> someNumber(int test);
 }
 
-final class SignalModule extends Module {
+abstract class RootInterface {
+  Future<String> someString(String test);
+}
+
+final class RootModule extends Module implements RootInterface {
+  RootModule();
+
+  @override
+  Future<String> someString(String test) => Operation(someString, () async => test);
+}
+
+final class SignalModule extends Module implements TestInterface {
+  final RootInterface rootInterface;
+
   late final Trigger<({int test})> trigger = Trigger(this);
   late final store = Store(this, 0);
 
@@ -16,18 +29,20 @@ final class SignalModule extends Module {
 
   late final _syncPipeline = Pipeline.sync(this, ($) => $..unit(store).redirect(print));
 
-  Future<int> someNumber(int test) => Operation(#someNumber, () async => test);
-  Future<int> someNumber2(int test2) => Operation(#someNumber2, () async => test2);
+  @override
+  Future<int> someNumber(int test) => Operation(someNumber, () async => test);
+  Future<int> someNumber2(int test2) => Operation(someNumber2, () async => test2);
 
   late final _pipeline = Pipeline.async(
     this,
     ($) => $
       ..unit(trigger).bind(_update)
-      ..operationOnType<int>(#someNumber2).redirect(print),
+      ..operationOnType<String>(rootInterface.someString)
+          .redirect((value) => print('from root interface: $value')),
     transformer: eventTransformers.sequental,
   );
 
-  SignalModule() {
+  SignalModule(this.rootInterface) {
     Module.initialize(
       this,
       attach: {
@@ -39,12 +54,15 @@ final class SignalModule extends Module {
 }
 
 void main(List<String> args) async {
-  ModulistoSettings.debugReportTypeMismatchOnOperation = false;
+  ModulistoSettings.debugReportTypeMismatchOnOperation = true;
 
-  final module = SignalModule();
+  final rootModule = RootModule();
+  final module = SignalModule(rootModule);
 
-  module.trigger((test: 228));
+  await rootModule.someString('123');
+
+  // module.trigger((test: 228));
 
   final number = await module.someNumber2(44);
-  module.trigger((test: number));
+  // module.trigger((test: number));
 }

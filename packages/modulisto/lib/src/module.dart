@@ -13,10 +13,12 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
     required Set<Attachable> attach,
     String? debugName,
   }) {
+    module.debugName = debugName;
+
     for (final attachable in attach) {
       attachable.attachToModule(module);
     }
-    module.$debugName = debugName;
+
     module._lifecycle.init();
   }
 
@@ -38,6 +40,7 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
   final StreamController<RawUnitIntent> _intentController = StreamController.broadcast();
 
   @override
+  @mustCallSuper
   Future<void> dispose() async {
     _lifecycle.dispose();
     _isClosed = true;
@@ -46,7 +49,6 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
       await dispose();
     }
     await _intentController.close();
-    super.dispose();
   }
 
   @override
@@ -63,17 +65,21 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
   Stream<RawUnitIntent> get $intentStream => _intentController.stream;
 
   @override
+  @nonVirtual
   bool get isClosed => _isClosed;
 
   @override
+  @protected
   @nonVirtual
-  late final String? $debugName;
+  late final String? debugName;
 
   @override
-  String toString() => 'Module(runtimeType: $runtimeType, debugName: ${$debugName}, isClosed: $isClosed)';
+  String toString() =>
+      'Module(runtimeType: $runtimeType, debugName: $debugName, isClosed: $isClosed)';
 
   @override
   @protected
+  @nonVirtual
   @visibleForTesting
   void attach(covariant Attachable attachable) => super.attach(attachable);
 }
