@@ -7,8 +7,10 @@ import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 
+abstract class SyncPipelineRef = Pipeline with PipelineRef;
+
 @internal
-final class SyncPipeline extends PipelineUnit implements PipelineRef, IntentHandler {
+final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, IntentHandler {
   SyncPipeline(
     super.module,
     this.pipelineRegister, {

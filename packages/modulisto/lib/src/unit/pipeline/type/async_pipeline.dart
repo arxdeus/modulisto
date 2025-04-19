@@ -10,8 +10,10 @@ import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_task.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+abstract class AsyncPipelineRef = Pipeline with PipelineRef;
+
 @internal
-final class AsyncPipeline extends PipelineUnit implements PipelineRef, IntentHandler {
+final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, IntentHandler {
   AsyncPipeline(
     super.module,
     this.pipelineRegister, {
