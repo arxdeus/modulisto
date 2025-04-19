@@ -7,8 +7,6 @@ import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 
-abstract class SyncPipelineRef = Pipeline with PipelineRef;
-
 @internal
 final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, IntentHandler {
   SyncPipeline(
@@ -24,9 +22,9 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
   @override
   void Function(T value) $handle<T>(
     Object? intentSource,
-    FutureOr<void> Function(PipelineContext context, T value) handler,
+    FutureOr<void> Function(MutatorContext context, T value) handler,
   ) =>
-      (T value) => handler(PipelineContextWithDeadline.create(), value);
+      (T value) => handler(PipelineContext(), value);
 
   @override
   @protected

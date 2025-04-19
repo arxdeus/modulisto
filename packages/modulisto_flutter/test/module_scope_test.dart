@@ -13,7 +13,7 @@ base class DummyWithStore extends DummyModule {
     ($) => $..unit(trigger).bind(_updateState),
   );
 
-  void _updateState(PipelineContext context, int value) => context.update(state, value);
+  void _updateState(MutatorContext mutate, int value) => mutate(state).set(value);
 
   DummyWithStore() {
     Module.initialize(
@@ -27,7 +27,7 @@ base class DummyWithStore extends DummyModule {
 
 void main() {
   group('module scope', () {
-    testWidgets('module is findable by context', (tester) async {
+    testWidgets('module is findable by mutate', (tester) async {
       final module = DummyWithStore();
       await tester.pumpWidget(
         TestUtil.appContext(
@@ -35,13 +35,13 @@ void main() {
             module: module,
             child: StoreBuilder(
               unit: module.state,
-              builder: (context, state, child) => Text('$state'),
+              builder: (mutate, state, child) => Text('$state'),
             ),
           ),
         ),
       );
-      final context = tester.firstElement(find.byType(StoreBuilder<int>));
-      final moduleFromContext = ModuleScope.of<DummyWithStore>(context);
+      final mutate = tester.firstElement(find.byType(StoreBuilder<int>));
+      final moduleFromContext = ModuleScope.of<DummyWithStore>(mutate);
       expect(module, same(moduleFromContext));
       expect(
         module,

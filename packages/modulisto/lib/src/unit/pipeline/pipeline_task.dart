@@ -17,8 +17,8 @@ class PipelineIntent<T, U> implements UnitIntent<T, U> {
   @override
   final T payload;
   final Pipeline source;
-  final FutureOr<void> Function(PipelineContext, T) task;
-  final PipelineContextWithDeadline context;
+  final FutureOr<void> Function(MutatorContext, T) task;
+  final PipelineContext context;
 
   const PipelineIntent({
     required this.unit,

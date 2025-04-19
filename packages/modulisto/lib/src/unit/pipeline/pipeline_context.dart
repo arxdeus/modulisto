@@ -5,19 +5,28 @@ import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 
 @internal
-final class PipelineContextWithDeadline implements PipelineContext, Disposable {
-  PipelineContextWithDeadline.create();
+final class PipelineContext implements MutatorContext, Disposable {
+  PipelineContext();
 
-  final Completer<void> contextDeadline = Completer();
+  Completer<void>? _contextDeadline;
+  Completer<void>? get contextDeadline => switch (_contextDeadline) {
+        Completer<void>() => _contextDeadline,
+        _ when !_isClosed => _contextDeadline ??= Completer(),
+        _ => null,
+      };
 
   @override
-  bool get isClosed => contextDeadline.isCompleted;
+  bool get isClosed => _contextDeadline?.isCompleted ?? _isClosed;
+
+  bool _isClosed = false;
+
   @override
   void dispose() {
-    if (contextDeadline.isCompleted) return;
-    contextDeadline.complete();
+    if (isClosed) return;
+    _isClosed = true;
+    _contextDeadline?.complete();
   }
 
   @override
-  void update<T>(Updatable<T> updatable, T value) => updatable.update(value);
+  Mutator<T> call<T>(T target) => Mutator(target);
 }

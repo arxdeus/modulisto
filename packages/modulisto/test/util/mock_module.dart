@@ -44,10 +44,12 @@ base class TestCounter extends Module {
     transformer: eventTransformer,
   );
 
-  Future<void> Function(PipelineContext context, Object? _) _mutateCounter(int Function(int old) mutator) =>
-      (context, payload) async {
+  Future<void> Function(MutatorContext mutate, Object? _) _mutateCounter(
+    int Function(int old) mutator,
+  ) =>
+      (mutate, payload) async {
         if (delayBetweenEvents != null) await Future<void>.delayed(delayBetweenEvents!);
-        context.update(state, mutator(state.value));
+        mutate(state).set(mutator(state.value));
       };
 
   final Duration? delayBetweenEvents;

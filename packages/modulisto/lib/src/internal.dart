@@ -38,7 +38,7 @@ abstract class IntentHandler {
   @internal
   void Function(T value) $handle<T>(
     Object? intentSource,
-    FutureOr<void> Function(PipelineContext context, T value) handler,
+    FutureOr<void> Function(MutatorContext context, T value) handler,
   );
 }
 
@@ -77,4 +77,9 @@ mixin PipelineRef implements ModuleChild, IntentHandler, DisposeQueue {
 @internal
 abstract class PipelineRefHost {
   PipelineRef get $pipelineRef;
+}
+
+extension type Mutator<T>(T _target) {
+  @internal
+  T get target => _target;
 }

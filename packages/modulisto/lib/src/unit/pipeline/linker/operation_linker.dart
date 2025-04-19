@@ -29,7 +29,7 @@ class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T>, PipelineR
         );
 
   @override
-  void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
+  void bind(FutureOr<void> Function(MutatorContext context, T value) handler) {
     final callback = $pipelineRef.$handle(_sourceFunction, handler);
     final trigger = OperationRunner.$operationRunners[_sourceFunction] ??= Trigger<Object?>(
       $pipelineRef.$module,

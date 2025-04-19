@@ -7,6 +7,10 @@ import 'package:modulisto/src/unit/unit.dart';
 
 typedef PipelineRegisterCallback = void Function(PipelineRef on);
 
+abstract class AsyncPipelineRef with PipelineRef implements Pipeline {}
+
+abstract class SyncPipelineRef with PipelineRef implements Pipeline {}
+
 @internal
 abstract base class PipelineUnit extends UnitBase<Object?> implements Pipeline, Disposable {
   PipelineUnit(

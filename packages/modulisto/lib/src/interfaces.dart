@@ -47,23 +47,20 @@ abstract interface class Notifier<T> {
 abstract interface class PipelineLinker<C, T> {
   /// Binds a notifies from `source` into handler callback
   /// Allow `Store` mutation via `PipelineContext` in [handler]
-  void bind(FutureOr<void> Function(PipelineContext context, T value) handler);
+  void bind(FutureOr<void> Function(MutatorContext context, T value) handler);
 
   /// Redirects payload from `source` into handler callback
   /// Doesn't allow `Store` mutations, since no `PipelineContext` provided
   void redirect(FutureOr<void> Function(T value) handler);
 }
 
-abstract interface class PipelineContext {
+abstract interface class MutatorContext {
   /// Whether the context is closed
   ///
   /// No any mutations will be executed using closed context
   bool get isClosed;
 
-  /// Updates passed [updatable] (at the current moment, only `Store`) to the new [value]
-  ///
-  /// Does nothing if context was closed (read about [isClosed])
-  void update<T>(Updatable<T> updatable, T value);
+  Mutator<T> call<T>(T target);
 }
 
 /// Extendable adapter that allows you converter underlying [unit]

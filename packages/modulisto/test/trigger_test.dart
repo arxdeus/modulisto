@@ -12,10 +12,10 @@ void main() {
       final trigger = Trigger<int>(dummy);
 
       // ignore: avoid_positional_boolean_parameters
-      void markAsDone(PipelineContext context, int markValue) {
+      void markAsDone(MutatorContext mutate, int markValue) {
         final oldValue = marker.value;
         final newValue = oldValue + 1;
-        context.update(marker, newValue);
+        mutate(marker).set(newValue);
         expect(marker.value, newValue);
 
         if (marker.value > 3) {

@@ -17,9 +17,7 @@ void main() {
     final pullToggle = Trigger<int>(dummy);
     var lifecycleState = _Lifecycle.notInited;
 
-    void update(PipelineContext context, int value) {
-      context.update(someCoolToggle, value);
-    }
+    void update(MutatorContext mutate, int value) => mutate(someCoolToggle).set(value);
 
     late final anotherPipeline = Pipeline.sync(
       dummy,

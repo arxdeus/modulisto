@@ -11,8 +11,13 @@ void main() {
     final dummy = DummyModule();
     final trigger = Trigger<()>(dummy);
     final store = Store(dummy, 0);
-    final pipeline =
-        Pipeline.async(dummy, ($) => $..unit(trigger).bind((context, _) => context.update(store, store.value + 1)));
+    final pipeline = Pipeline.async(
+      dummy,
+      ($) => $
+        ..unit(trigger).bind(
+          (mutate, _) => mutate(store).patch((value) => value + 1),
+        ),
+    );
     dummy.attach(pipeline);
     return (store, trigger);
   }

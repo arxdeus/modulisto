@@ -10,8 +10,6 @@ import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline_task.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-abstract class AsyncPipelineRef = Pipeline with PipelineRef;
-
 @internal
 final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, IntentHandler {
   AsyncPipeline(
@@ -48,22 +46,25 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   @override
   void Function(T value) $handle<T>(
     Object? intentSource,
-    FutureOr<void> Function(PipelineContext context, T value) handler,
+    FutureOr<void> Function(MutatorContext context, T value) handler,
   ) {
     void intentCallback(T value) {
       if (_isClosed) return;
       if ($module.isClosed) return;
 
-      final context = PipelineContextWithDeadline.create();
+      final context = PipelineContext();
       final intent = RawPipelineIntent(
         source: this,
         unit: intentSource,
         payload: value,
-        task: (PipelineContext context, Object? value) => handler(context, value as T),
+        task: (MutatorContext context, Object? value) => handler(context, value as T),
         context: context,
       );
 
-      _pendingEvents.add(context.contextDeadline.future);
+      if (context.contextDeadline?.future case final future?) {
+        _pendingEvents.add(future);
+      }
+
       $module.$addIntent(intent);
     }
 
@@ -93,7 +94,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
 
     void removeFromPending() {
       if (_isClosed) return;
-      _pendingEvents.remove(intent.context.contextDeadline.future);
+      _pendingEvents.remove(intent.context.contextDeadline?.future);
     }
 
     Future.sync(() => intent.task(intent.context, intent.payload))

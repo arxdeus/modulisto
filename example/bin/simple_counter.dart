@@ -11,9 +11,9 @@ final class TestModule extends Module {
     this,
     debugName: 'counterPipeline',
     ($) => $
-      ..unit(increment).bind((context, _) => context.update(state, state.value + 1))
-      ..unit(decrement).bind((context, _) => context.update(state, state.value - 1))
-      ..unit(reset).bind((context, _) => context.update(state, 0)),
+      ..unit(increment).bind((mutate, _) => mutate(state).patch((value) => value + 1))
+      ..unit(decrement).bind((mutate, _) => mutate(state).patch((value) => value - 1))
+      ..unit(reset).bind((mutate, _) => mutate(state).set(0)),
     transformer: eventTransformers.sequental,
   );
 

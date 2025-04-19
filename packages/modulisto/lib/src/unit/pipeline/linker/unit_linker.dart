@@ -19,7 +19,7 @@ class UnitPipelineLinker<T> implements PipelineLinker<Unit<T>, T>, PipelineRefHo
   UnitPipelineLinker._(this._unit, this.$pipelineRef);
 
   @override
-  void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
+  void bind(FutureOr<void> Function(MutatorContext context, T value) handler) {
     final callback = $pipelineRef.$handle(_unit, handler);
     _unit.addListener(callback);
   }

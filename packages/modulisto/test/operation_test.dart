@@ -18,7 +18,7 @@ void main() {
         dummy,
         ($) => $
           ..unit(trigger).bind(
-            (context, value) => context.update(store, value),
+            (mutate, value) => mutate(store).set(value),
           )
           ..operationOnType<int>(someNumber).redirect(trigger.call),
       );
@@ -42,7 +42,7 @@ void main() {
         dummy,
         ($) => $
           ..unit(trigger).bind(
-            (context, value) => context.update(store, value),
+            (mutate, value) => mutate(store).set(value),
           )
           ..operationOnType<int>(someNumber).redirect(trigger.call),
       );

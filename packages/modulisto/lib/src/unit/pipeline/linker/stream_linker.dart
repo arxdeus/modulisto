@@ -19,7 +19,7 @@ class StreamPipelineLinker<T> implements PipelineLinker<Stream<T>, T>, PipelineR
   StreamPipelineLinker._(this._stream, this.$pipelineRef);
 
   @override
-  void bind(FutureOr<void> Function(PipelineContext context, T value) handler) {
+  void bind(FutureOr<void> Function(MutatorContext context, T value) handler) {
     final sub = _stream.listen($pipelineRef.$handle(_stream, handler));
     $pipelineRef.$disposeQueue.add(sub.cancel);
   }

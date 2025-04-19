@@ -20,10 +20,10 @@ void main() {
         dummy,
         ($) => $
           ..unit(trigger).bind(
-            (context, value) => context.update(state, value),
+            (mutate, value) => mutate(state).set(value),
           )
           ..unit(state).bind(
-            (context, value) => context.update(linkedState, value.toString()),
+            (mutate, value) => mutate(linkedState).set(value.toString()),
           ),
       );
 

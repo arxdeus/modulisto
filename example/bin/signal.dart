@@ -20,11 +20,14 @@ final class SignalModule extends Module implements TestInterface {
 
   late final Trigger<({int test})> trigger = Trigger(this);
   late final store = Store(this, 0);
+  late final listState = ListStore(this, <int>[]);
+  late final mapState = MapStore(this, <int, String>{});
 
-  Future<void> _update(PipelineContext context, ({int test}) value) async {
+  Future<void> _update(MutatorContext mutate, ({int test}) value) async {
     await Future<void>.delayed(const Duration(seconds: 1));
 
-    context.update(store, value.test);
+    mutate(listState).add(value.test);
+    mutate(mapState).setValue(123, '');
   }
 
   late final _syncPipeline = Pipeline.sync(this, ($) => $..unit(store).redirect(print));
@@ -63,6 +66,6 @@ void main(List<String> args) async {
 
   // module.trigger((test: 228));
 
-  final number = await module.someNumber2(44);
+  // final number = await module.someNumber2(44);
   // module.trigger((test: number));
 }
