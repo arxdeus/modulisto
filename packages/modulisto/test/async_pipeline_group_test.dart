@@ -50,7 +50,7 @@ void main() {
             transformerTest(
               transformer: eventTransformers.restartable,
               elapsedDuration: defaultDuration * numberOfEmits,
-              resultValue: 2,
+              resultValue: numberOfEmits.clamp(1, 2),
             ),
           );
           test(
@@ -63,17 +63,9 @@ void main() {
           );
         });
 
-    final rand = Random();
-
     /// Fuzz
-    fuzzTestByCount(rand.nextInt(25));
-    fuzzTestByCount(rand.nextInt(50));
-    fuzzTestByCount(rand.nextInt(100));
-    fuzzTestByCount(rand.nextInt(1000));
-    fuzzTestByCount(rand.nextInt(1000) + 1000);
-    fuzzTestByCount(rand.nextInt(1000) + 2000);
-    fuzzTestByCount(rand.nextInt(1000) + 3000);
-    fuzzTestByCount(rand.nextInt(1000) + 5000);
-    fuzzTestByCount(rand.nextInt(1000) + 7000);
+    final rand = Random();
+    final randMax = List.generate(13, (i) => pow(2, i).toInt());
+    randMax.map((value) => rand.nextInt(value) + value).forEach(fuzzTestByCount);
   });
 }
