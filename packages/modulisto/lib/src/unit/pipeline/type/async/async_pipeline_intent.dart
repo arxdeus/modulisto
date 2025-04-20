@@ -6,21 +6,22 @@ import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
-import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
+import 'package:modulisto/src/unit/pipeline/type/async/async_pipeline_context.dart';
 
-typedef RawPipelineIntent = PipelineIntent<dynamic, Object?>;
+typedef RawAsyncPipelineIntent = AsyncPipelineIntent<dynamic, Object?>;
 
 @internal
-class PipelineIntent<T, U> implements UnitIntent<T, U> {
+class AsyncPipelineIntent<T, U> implements UnitIntent<T, U> {
   @override
   final U unit;
   @override
   final T payload;
+
   final Pipeline source;
   final FutureOr<void> Function(MutatorContext, T) task;
-  final PipelineContext context;
+  final AsyncPipelineContext context;
 
-  const PipelineIntent({
+  const AsyncPipelineIntent({
     required this.unit,
     required this.payload,
     required this.source,

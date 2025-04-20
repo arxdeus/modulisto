@@ -5,19 +5,6 @@ import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 
 @internal
-class SelfUnitIntent<T, U extends Stream<T>> implements UnitIntent<T, U> {
-  @override
-  final U unit;
-  @override
-  final T payload;
-
-  const SelfUnitIntent({
-    required this.unit,
-    required this.payload,
-  });
-}
-
-@internal
 base class UnitBase<T> implements Notifier<T>, Unit<T> {
   UnitBase(
     this.$module, {

@@ -6,9 +6,11 @@ import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/transformers.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
-import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
-import 'package:modulisto/src/unit/pipeline/pipeline_task.dart';
+import 'package:modulisto/src/unit/pipeline/type/async/async_pipeline_context.dart';
+import 'package:modulisto/src/unit/pipeline/type/async/async_pipeline_intent.dart';
 import 'package:stream_transform/stream_transform.dart';
+
+abstract class AsyncPipelineRef with PipelineRef implements Pipeline {}
 
 @internal
 final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, IntentHandler {
@@ -27,8 +29,10 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   @internal
   late final Queue<void Function()> $disposeQueue = Queue();
 
-  late final Stream<RawPipelineIntent> _intentStream = _transformer(
-    $module.$intentStream.whereType<RawPipelineIntent>().where((intent) => intent.source == this),
+  late final Stream<RawAsyncPipelineIntent> _intentStream = _transformer(
+    $module.$intentStream
+        .whereType<RawAsyncPipelineIntent>()
+        .where((intent) => intent.source == this),
     _handleAsyncIntent,
   );
 
@@ -52,8 +56,8 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
       if (_isClosed) return;
       if ($module.isClosed) return;
 
-      final context = PipelineContext();
-      final intent = RawPipelineIntent(
+      final context = AsyncPipelineContext();
+      final intent = RawAsyncPipelineIntent(
         source: this,
         unit: intentSource,
         payload: value,
@@ -61,10 +65,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
         context: context,
       );
 
-      if (context.contextDeadline?.future case final future?) {
-        _pendingEvents.add(future);
-      }
-
+      _pendingEvents.add(context.future);
       $module.$addIntent(intent);
     }
 
@@ -84,17 +85,19 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
     super.dispose();
   }
 
-  Stream<PipelineIntent<T, Object?>> _handleAsyncIntent<T>(PipelineIntent<T, Object?> intent) {
+  Stream<AsyncPipelineIntent<T, Object?>> _handleAsyncIntent<T>(
+    AsyncPipelineIntent<T, Object?> intent,
+  ) {
     if (intent.context.isClosed) return const Stream.empty();
 
-    final controller = StreamController<PipelineIntent<T, Object?>>(
+    final controller = StreamController<AsyncPipelineIntent<T, Object?>>(
       onCancel: intent.context.dispose,
       sync: true,
     );
 
     void removeFromPending() {
       if (_isClosed) return;
-      _pendingEvents.remove(intent.context.contextDeadline?.future);
+      _pendingEvents.remove(intent.context.future);
     }
 
     Future.sync(() => intent.task(intent.context, intent.payload))

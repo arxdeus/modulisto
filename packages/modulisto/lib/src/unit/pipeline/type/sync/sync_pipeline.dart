@@ -5,7 +5,9 @@ import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/pipeline/pipeline.dart';
-import 'package:modulisto/src/unit/pipeline/pipeline_context.dart';
+import 'package:modulisto/src/unit/pipeline/type/sync/sync_pipeline_context.dart';
+
+abstract class SyncPipelineRef with PipelineRef implements Pipeline {}
 
 @internal
 final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, IntentHandler {
@@ -24,14 +26,11 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
     Object? intentSource,
     FutureOr<void> Function(MutatorContext context, T value) handler,
   ) =>
-      (T value) => handler(PipelineContext(), value);
+      (T value) => handler(SyncPipelineContext(), value);
 
   @override
   @protected
-  void attachToModule(ModuleBase module) {
-    module.$disposeQueue.addLast(dispose);
-    pipelineRegister(this);
-  }
+  void attachToModule(ModuleBase module) => pipelineRegister(this);
 
   @override
   void dispose() {
