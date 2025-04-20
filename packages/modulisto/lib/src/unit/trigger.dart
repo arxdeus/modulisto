@@ -1,9 +1,11 @@
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/unit/unit.dart';
 
+const _nothingValue = ();
+
 extension TriggerVoidCallExt on Trigger<()> {
   /// Invokes a trigger with empty payload
-  void call() => notifyUpdate(());
+  void call() => notifyUpdate(_nothingValue);
 }
 
 extension TriggerPayloadCallExt<T> on Trigger<T> {
