@@ -1,17 +1,17 @@
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/internal.dart';
-import 'package:modulisto/src/unit/store/store_base.dart';
+import 'package:modulisto/src/unit/store/value_unit_base.dart';
 
 extension StoreMutate<T> on Mutator<Store<T>> {
-  void set(T value) => target.update(value);
-  void patch(T Function(T oldValue) buildValue) => target.update(
-        buildValue(target.value),
+  void set(T value) => unit.update(value);
+  void patch(T Function(T oldValue) buildValue) => unit.update(
+        buildValue(unit.value),
       );
 }
 
 /// A subtype of the [Unit] that represents a holder/storage/container for [T] [value]
-base class Store<T> extends StoreBase<T> {
+base class Store<T> extends ValueUnitBase<T> implements Mutable {
   Store(
     super.module,
     T initialValue, {

@@ -79,7 +79,8 @@ abstract class PipelineRefHost {
   PipelineRef get $pipelineRef;
 }
 
-extension type Mutator<T>(T _target) {
+@internal
+extension type Mutator<M extends Mutable>(M _unit) {
   @internal
-  T get target => _target;
+  M get unit => _unit;
 }

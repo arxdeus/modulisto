@@ -28,5 +28,5 @@ final class PipelineContext implements MutatorContext, Disposable {
   }
 
   @override
-  Mutator<T> call<T>(T target) => Mutator(target);
+  Mutator<M> call<M extends Mutable>(M unit) => Mutator(unit);
 }

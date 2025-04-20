@@ -60,8 +60,10 @@ abstract interface class MutatorContext {
   /// No any mutations will be executed using closed context
   bool get isClosed;
 
-  Mutator<T> call<T>(T target);
+  Mutator<U> call<U extends Mutable>(U unit);
 }
+
+abstract interface class Mutable {}
 
 /// Extendable adapter that allows you converter underlying [unit]
 /// into other several types (`Stream`, `Listenable`, etc)
