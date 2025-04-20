@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/store/store.dart';
 
@@ -15,17 +17,18 @@ base class ListStore<T> extends Store<List<T>> {
     super.module,
     super.initialValue, {
     super.debugName,
-  })  : value = List.of(initialValue),
+  })  : _value = List.of(initialValue),
         super();
 
   @override
-  final List<T> value;
+  late final List<T> value = UnmodifiableListView(_value);
+  final List<T> _value;
 
   int get length => value.length;
 
-  F _executeWithNotify<F>(F Function(List<T> xist) callback) {
-    final result = callback(value);
-    notifyUpdate(value);
+  F _executeWithNotify<F>(F Function(List<T> list) callback) {
+    final result = callback(_value);
+    notifyUpdate(_value);
     return result;
   }
 }

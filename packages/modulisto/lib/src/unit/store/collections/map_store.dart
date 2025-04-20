@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/store/store.dart';
 
@@ -16,19 +18,20 @@ base class MapStore<K, V> extends Store<Map<K, V>> {
     super.module,
     super.initialValue, {
     super.debugName,
-  })  : value = Map.of(initialValue),
+  })  : _value = Map.of(initialValue),
         super();
 
   @override
-  final Map<K, V> value;
+  late final Map<K, V> value = UnmodifiableMapView(_value);
+  final Map<K, V> _value;
 
-  V? operator [](Object? key) => this.value[key];
+  V? operator [](Object? key) => this._value[key];
 
   Iterable<K> get keys => value.keys;
 
   T _executeWithNotify<T>(T Function(Map<K, V> map) callback) {
-    final result = callback(value);
-    notifyUpdate(value);
+    final result = callback(_value);
+    notifyUpdate(_value);
     return result;
   }
 }
