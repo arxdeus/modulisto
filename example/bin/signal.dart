@@ -64,7 +64,7 @@ void main(List<String> args) async {
 
   await rootModule.someString('123');
 
-  // module.trigger((test: 228));
+  module.trigger((test: 228));
 
   // final number = await module.someNumber2(44);
   // module.trigger((test: number));
