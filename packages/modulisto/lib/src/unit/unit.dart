@@ -18,10 +18,17 @@ base class UnitBase<T> implements Notifier<T>, Unit<T> {
 
   @override
   @internal
-  void addListener(ValueChanged<T> callback) => _listeners.add(callback);
+  void addListener(ValueChanged<T> callback) {
+    if (_isDisposed) return;
+    _listeners.add(callback);
+  }
+
   @override
   @internal
-  void removeListener(ValueChanged<T> callback) => _listeners.remove(callback);
+  void removeListener(ValueChanged<T> callback) {
+    if (_isDisposed) return;
+    _listeners.remove(callback);
+  }
 
   @override
   @internal
