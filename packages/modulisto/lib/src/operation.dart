@@ -14,10 +14,9 @@ base mixin OperationRunner implements Disposable {
   Future<T> Operation<T>(
     Function sourceFunction,
     Future<T> Function() callback,
-  ) async {
-    final result = await callback();
-    final relevantTrigger = $operationRunners[sourceFunction];
-    relevantTrigger?.call(result);
-    return result;
-  }
+  ) =>
+      callback().then((value) {
+        $operationRunners[sourceFunction]?.call(value);
+        return value;
+      });
 }
