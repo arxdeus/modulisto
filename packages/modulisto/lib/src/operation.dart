@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:modulisto/src/interfaces.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
 @internal
-base mixin OperationRunner implements Disposable {
+base mixin OperationRunner {
   @internal
   static final $operationRunners = <Function, Trigger<Object?>>{};
 
