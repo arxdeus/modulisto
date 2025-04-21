@@ -1,4 +1,4 @@
-name: Checkout
+name: Codecheck
 
 on:
   workflow_dispatch:
@@ -24,3 +24,5 @@ env:
 jobs:
   code_check:
     uses: arxdeus/github_workflows/.github/workflows/dart_monorepo_code_check.yaml@main
+    with:
+      line-length: 120
