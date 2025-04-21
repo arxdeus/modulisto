@@ -27,7 +27,8 @@ class ModuleScope<M extends Module> extends StatefulWidget {
   final Widget child;
 
   /// Get the current [Module]
-  static M of<M extends Module>(BuildContext context) => _InheritedModuleScope.of<M>(context, listen: false);
+  static M of<M extends Module>(BuildContext context) =>
+      _InheritedModuleScope.of<M>(context, listen: false);
 
   @override
   State<ModuleScope<M>> createState() => _ModuleScopeState<M>();
@@ -68,5 +69,6 @@ class _InheritedModuleScope<M> extends InheritedWidget {
       maybeOf(context, listen: listen) ?? _notFoundInheritedWidgetOfExactType();
 
   @override
-  bool updateShouldNotify(covariant _InheritedModuleScope<M> oldWidget) => oldWidget.module != module;
+  bool updateShouldNotify(covariant _InheritedModuleScope<M> oldWidget) =>
+      oldWidget.module != module;
 }

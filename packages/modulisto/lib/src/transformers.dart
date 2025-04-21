@@ -6,7 +6,8 @@ import 'package:modulisto/modulisto.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 final EventTransformer _sequental = <A>(source, process) => source.asyncExpand(process);
-final EventTransformer _droppable = <A>(source, process) => source.transform(_ExhaustMapStreamTransformer<A>(process));
+final EventTransformer _droppable =
+    <A>(source, process) => source.transform(_ExhaustMapStreamTransformer<A>(process));
 final EventTransformer _concurrent = <A>(source, process) => source.concurrentAsyncExpand(process);
 final EventTransformer _restartable = <A>(source, process) => source.switchMap(process);
 

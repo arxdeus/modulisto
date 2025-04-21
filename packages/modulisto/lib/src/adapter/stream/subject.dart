@@ -89,7 +89,11 @@ class SubjectStream<T> extends Stream<T> {
     final value = _subject.value;
     if (value != null) controller.add(value);
 
-    controller.addStream(_subject._parent.stream).whenComplete(controller.close).onError(controller.addError).ignore();
+    controller
+        .addStream(_subject._parent.stream)
+        .whenComplete(controller.close)
+        .onError(controller.addError)
+        .ignore();
 
     return controller.stream;
   }
