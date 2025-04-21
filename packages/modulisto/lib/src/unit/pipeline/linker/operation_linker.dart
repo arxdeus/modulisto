@@ -38,7 +38,7 @@ class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T>, PipelineR
 
     // ignore: cascade_invocations
     trigger.addListener((value) {
-      if (ModulistoSettings.debugReportTypeMismatchOnOperation) {
+      if (ModulistoSettings.debugReportOperationTypeMismatch) {
         assert(
           value.runtimeType == T,
           'Type mismatch on Operation(id: ${trigger.debugName}, source: $_sourceFunction), expected: $T, got: ${value.runtimeType} ',

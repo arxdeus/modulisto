@@ -57,7 +57,7 @@ final class SignalModule extends Module implements TestInterface {
 }
 
 void main(List<String> args) async {
-  ModulistoSettings.debugReportTypeMismatchOnOperation = true;
+  ModulistoSettings.debugReportOperationTypeMismatch = true;
 
   final rootModule = RootModule();
   final module = SignalModule(rootModule);

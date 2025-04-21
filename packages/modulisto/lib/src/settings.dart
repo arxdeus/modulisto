@@ -1,3 +1,3 @@
 abstract final class ModulistoSettings {
-  static bool debugReportTypeMismatchOnOperation = true;
+  static bool debugReportOperationTypeMismatch = true;
 }
