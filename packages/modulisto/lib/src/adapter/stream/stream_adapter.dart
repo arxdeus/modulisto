@@ -11,9 +11,9 @@ extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
   Stream<T> stream() {
     if (unit.$module.isClosed) return const Stream.empty();
 
-    final linkedController = $linkedControllers[unit] as StreamController<T>?;
-    final hasControllerBefore = linkedController != null;
-    final controller = linkedController ?? StreamController<T>.broadcast(sync: true);
+    final hasControllerBefore = $linkedControllers[unit] != null;
+    final controller = ($linkedControllers[unit] ?? StreamController<T>.broadcast(sync: true))
+        as StreamController<T>;
 
     if (!hasControllerBefore) {
       void callback(T value) => controller.add(value);
@@ -25,7 +25,7 @@ extension UnitToStreamAdapter<T> on UnitAdapter<Unit<T>> {
           $linkedControllers[unit] = null;
 
           unit.removeListener(callback);
-          controller.close();
+          unawaited(controller.close());
         });
     }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/adapter/stream/subject.dart';
 import 'package:modulisto/src/interfaces.dart';
@@ -9,9 +11,9 @@ extension ValueUnitUnitToStreamAdapter<T> on UnitAdapter<ValueUnit<T>> {
 
   Stream<T> subject() {
     if (unit.$module.isClosed) return const Stream.empty();
-    final linkedController = linkedControllers[unit] as Subject<T>?;
-    final hasControllerBefore = linkedController != null;
-    final Subject<T> controller = linkedController ?? Subject(initialValue: unit.value);
+    final hasControllerBefore = linkedControllers[unit] != null;
+    final controller =
+        (linkedControllers[unit] ?? Subject<T>(initialValue: unit.value)) as Subject<T>;
 
     if (!hasControllerBefore) {
       void callback(T value) => controller.add(value);
@@ -22,7 +24,7 @@ extension ValueUnitUnitToStreamAdapter<T> on UnitAdapter<ValueUnit<T>> {
         ..$module.$disposeQueue.add(() {
           linkedControllers[unit] = null;
           unit.removeListener(callback);
-          controller.close();
+          unawaited(controller.close());
         });
     }
 
