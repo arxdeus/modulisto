@@ -4,7 +4,7 @@ import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/unit/store/store.dart';
 
 extension MapStoreMutate<K, V> on Mutator<MapStore<K, V>> {
-  void setValue(K key, V value) => unit._executeWithNotify((map) => map[key] = value);
+  void setKeyValue(K key, V value) => unit._executeWithNotify((map) => map[key] = value);
   void addAll(Map<K, V> values) => unit._executeWithNotify((map) => map.addAll(values));
   void remove(K key) => unit._executeWithNotify((map) => map.remove(key));
   void removeWhere(bool Function(K, V) test) =>

@@ -27,7 +27,7 @@ final class SignalModule extends Module implements TestInterface {
     await Future<void>.delayed(const Duration(seconds: 1));
 
     mutate(listState).add(value.test);
-    mutate(mapState).setValue(123, '');
+    mutate(mapState).setKeyValue(123, '');
   }
 
   late final _syncPipeline = Pipeline.sync(this, ($) => $..unit(store).redirect(print));
