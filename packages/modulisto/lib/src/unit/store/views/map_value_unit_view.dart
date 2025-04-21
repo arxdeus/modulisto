@@ -19,18 +19,23 @@ final class MapValueUnitView<T, F> extends ValueUnitBase<T> {
     super.debugName,
   }) : super(_parent.$module) {
     _parent.addListener(_setCallback);
-    _cachedValue = _mapper(_parent.value);
+    _cachedValue = _mappedValue;
   }
 
-  void _setCallback(F value) => _cachedValue = _mapper(value);
+  void _setCallback(F value) => _isDirty = true;
+  T get _mappedValue => _mapper(_parent.value);
 
   final ValueUnit<F> _parent;
   final ValueMapper<T, F> _mapper;
 
   late T _cachedValue;
+  bool _isDirty = false;
 
   @override
-  T get value => _cachedValue;
+  T get value => switch (_isDirty) {
+        false => _cachedValue,
+        true => _cachedValue = _mappedValue,
+      };
 
   @override
   @internal
