@@ -40,7 +40,7 @@ void main() {
       },
     );
 
-    test('lifecycle init groups worked', () async {
+    test('lifecycle init groups worked', () {
       expect(lifecycleState, equals(_Lifecycle.inited));
       expect(someCoolToggle.value, equals(1));
     });
@@ -51,7 +51,7 @@ void main() {
       expect(lifecycleState, equals(_Lifecycle.disposed));
     });
 
-    test('all subscriptions are removed after dispose', () async {
+    test('all subscriptions are removed after dispose', () {
       final oldValue = someCoolToggle.value;
       final newValue = oldValue + 1;
 

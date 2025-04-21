@@ -6,7 +6,7 @@ import 'util/mock_module.dart';
 
 void main() {
   group('[trigger basic functionality]', () {
-    test('trigger invocation in `PipelineCallback` works fine', () async {
+    test('trigger invocation in `PipelineCallback` works fine', () {
       final dummy = DummyModule();
       final marker = Store<int>(dummy, 0);
       final trigger = Trigger<int>(dummy);

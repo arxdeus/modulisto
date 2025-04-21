@@ -87,7 +87,7 @@ void main() {
     });
     test('ensure that stream associated with unit is closed after module dispose', () async {
       final module = createModule(eventTransformer: eventTransformers.sequental);
-      bool isDone = false;
+      var isDone = false;
       final sub = UnitAdapter(module.increment).stream().listen(
             null,
             onDone: () => isDone = true,
@@ -99,11 +99,12 @@ void main() {
       expect(UnitToStreamAdapter.$linkedControllers[module.increment], isNull);
       expect(isDone, isTrue);
       expect(controller?.isClosed, isTrue);
-      await sub.cancel();
+      unawaited(sub.cancel());
+      unawaited(controller?.close());
     });
     test('ensure that subject associated with store is closed after module dispose', () async {
       final module = createModule(eventTransformer: eventTransformers.sequental);
-      bool isDone = false;
+      var isDone = false;
       final stream1 = UnitAdapter(module.state).subject();
       final sub = stream1.listen(
         null,
@@ -120,7 +121,8 @@ void main() {
       expect(isDone, isTrue);
       expect(controller?.isClosed, isTrue);
 
-      await sub.cancel();
+      unawaited(sub.cancel());
+      unawaited(controller?.close());
     });
 
     test(
