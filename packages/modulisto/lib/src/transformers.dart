@@ -49,7 +49,7 @@ class _ExhaustMapStreamTransformer<T> extends StreamTransformerBase<T, T> {
         );
       },
       onError: controller.addError,
-      onDone: () => mappedSubscription ?? controller.close(),
+      onDone: () => mappedSubscription ?? unawaited(controller.close()),
     );
 
     return controller.stream;
