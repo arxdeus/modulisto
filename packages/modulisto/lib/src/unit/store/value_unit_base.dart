@@ -3,7 +3,7 @@ import 'package:modulisto/src/unit/unit.dart';
 
 abstract base class ValueUnitBase<T> extends UnitBase<T> implements ValueUnit<T> {
   ValueUnitBase(
-    super.$module, {
+    super.module, {
     super.debugName,
   });
 }
