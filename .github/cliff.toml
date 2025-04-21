@@ -76,6 +76,7 @@ commit_parsers = [
     { message = "^revert", group = "Revert" },
     { message = "^test", group = "Tests" },
     { message = "^chore\\(version\\):", skip = true },
+    { message = "^chore\\(skip\\):", skip = true },
     { message = "^release.*:", skip = true },
     { message = "^ci", skip = true },
     { message = "^chore", group = "Miscellaneous Chores" },
