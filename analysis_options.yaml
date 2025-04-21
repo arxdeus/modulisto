@@ -10,6 +10,7 @@ analyzer:
     strict-raw-types: true
 
   errors:
+    undefined_lint: ignore
     # Built-in rules
     body_might_complete_normally_nullable: ignore
 
@@ -84,6 +85,7 @@ formatter:
 
 linter:
   rules:
+    - undefined_lint: ignore
     - always_declare_return_types
     - always_put_required_named_parameters_first
     - always_require_non_null_named_parameters
