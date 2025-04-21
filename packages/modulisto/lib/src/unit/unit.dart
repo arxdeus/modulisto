@@ -9,9 +9,7 @@ base class UnitBase<T> implements Notifier<T>, Unit<T> {
   UnitBase(
     this.$module, {
     this.debugName,
-  }) {
-    $module.$disposeQueue.addLast(dispose);
-  }
+  });
 
   bool _isDisposed = false;
   final List<ValueChanged<T>> _listeners = [];
@@ -55,4 +53,13 @@ base class UnitBase<T> implements Notifier<T>, Unit<T> {
   @override
   @internal
   final String? debugName;
+}
+
+base class ModuleBindedUnitBase<T> extends UnitBase<T> {
+  ModuleBindedUnitBase(
+    super.module, {
+    super.debugName,
+  }) {
+    $module.$disposeQueue.addLast(dispose);
+  }
 }

@@ -30,7 +30,10 @@ final class SyncPipeline extends PipelineUnit implements SyncPipelineRef, Intent
 
   @override
   @protected
-  void attachToModule(ModuleBase module) => pipelineRegister(this);
+  void attachToModule(ModuleBase module) {
+    pipelineRegister(this);
+    $module.$disposeQueue.addLast(dispose);
+  }
 
   @override
   void dispose() {

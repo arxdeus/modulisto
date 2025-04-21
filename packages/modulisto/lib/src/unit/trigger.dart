@@ -17,7 +17,7 @@ extension TriggerPayloadCallExt<T> on Trigger<T> {
 ///
 /// When the `.call` method is invoked (with the appropriate `payload` of type `T`)
 /// it notifies all `Unit` `listeners` with new value
-final class Trigger<T> extends UnitBase<T> {
+final class Trigger<T> extends ModuleBindedUnitBase<T> {
   Trigger(
     super.$module, {
     super.debugName,
