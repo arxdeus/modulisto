@@ -1,5 +1,7 @@
 # Modulisto
 
+[![Codecheck](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml/badge.svg?event=push)](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml)
+
 A advanced state management system that based on the concepts of `Trigger` and `Store`, which are handled by `Pipeline.sync` and `Pipeline.async`
 
 # Quick Start
