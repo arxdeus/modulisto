@@ -8,5 +8,5 @@ environment:
   flutter: ">=3.27.0"
 
 dependencies:
-  modulisto: ^2.4.0
+  modulisto: ^3.0.0
 
