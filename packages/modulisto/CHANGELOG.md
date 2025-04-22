@@ -1,6 +1,41 @@
 # Changelog
 
 ---
+## [3.0.0](https://github.com/arxdeus/modulisto/compare/modulisto-v2.4.0..3.0.0) - 2025-04-22
+
+### Bug Fixes
+
+- **(collections_store)** hide `value` under UnmodifiableView's - ([90a61e3](https://github.com/arxdeus/modulisto/commit/90a61e31617518e143ba41ba410f02df08e3a0b2))
+- **(unit)** check unit state on `addListener`, `removeListener` - ([17f308f](https://github.com/arxdeus/modulisto/commit/17f308f152c0351cfe3d51a96e4139dfbd478c99))
+
+### Features
+
+- **(unit)** introduce `ModuleBindedUnitBase` with auto-disposition bind - ([1dec02a](https://github.com/arxdeus/modulisto/commit/1dec02a6b797fb1f77ba5cfae3479a8b98ebf16c))
+-  [**BREAKING CHANGE**]operation - ([0bc2a72](https://github.com/arxdeus/modulisto/commit/0bc2a72837d0292e38375fc432c52503fe1c19f9))
+-  [**BREAKING CHANGE**]mutation context - ([5359780](https://github.com/arxdeus/modulisto/commit/5359780898ecd0d5dc580a9ad4306322f98b5fe8))
+- mutator accepts only `Store` and it subtypes - ([c58ac9b](https://github.com/arxdeus/modulisto/commit/c58ac9b17daa7ac8573df5ac99a95b8d18c28e55))
+- `MapValueUnitView` maps new value lazily - ([87ab905](https://github.com/arxdeus/modulisto/commit/87ab905742fff89f2fccc732086ef473dd136b23))
+
+### Miscellaneous Chores
+
+- **(debug)** `debugReportOperationTypeMismatch` naming - ([1447224](https://github.com/arxdeus/modulisto/commit/1447224c8f16882d2a235feede5ff61329aceaaa))
+- **(operation)** future like operation handle - ([b828fb5](https://github.com/arxdeus/modulisto/commit/b828fb504cec40081aa5ce6ba1ac73dde6a4757f))
+- **(subject)** `unawaited` instead of `ignore` - ([3408537](https://github.com/arxdeus/modulisto/commit/34085376d709941c30d3c1c6b40e335e26a10777))
+- **(trigger)** export `nothingValue` for empty payload - ([26c69ae](https://github.com/arxdeus/modulisto/commit/26c69ae20d3d14cc7dc13afe3929fa6c5de52fbc))
+- remove `Disposable` on `OperationRunner` - ([44a927e](https://github.com/arxdeus/modulisto/commit/44a927eb292539b979bfa342f013780eda4d6682))
+
+### Refactoring
+
+- **(map_store)** `setKeyValue` instead of `setValue` - ([66feb26](https://github.com/arxdeus/modulisto/commit/66feb263dad38eeee7b33137943dfdadcbfe58a3))
+- **(pipeline)** split ref for pipelines - ([e7cd1c2](https://github.com/arxdeus/modulisto/commit/e7cd1c2b4fb3959ab84b64ca844b23b11c6753c6))
+- **(pipeline)** split pipelines and contexts to less coupling - ([60981e7](https://github.com/arxdeus/modulisto/commit/60981e75a5f149a9813e7d3d5964ff077b003440))
+
+### Tests
+
+- fuzzy async group - ([1971a79](https://github.com/arxdeus/modulisto/commit/1971a79ffccda216fd503a71d7a4e317ab1dcb91))
+- refactor tests after applying new analyzer rules - ([61d4bec](https://github.com/arxdeus/modulisto/commit/61d4becd30fa3e0095bed0e531748e5fb5db23a5))
+
+---
 ## [2.4.0](https://github.com/arxdeus/modulisto/compare/modulisto-v2.3.0..2.4.0) - 2025-03-16
 
 ### Bug Fixes
