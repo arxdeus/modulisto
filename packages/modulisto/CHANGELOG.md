@@ -11,8 +11,8 @@
 ### Features
 
 - **(unit)** introduce `ModuleBindedUnitBase` with auto-disposition bind - ([1dec02a](https://github.com/arxdeus/modulisto/commit/1dec02a6b797fb1f77ba5cfae3479a8b98ebf16c))
--  [**BREAKING CHANGE**]operation - ([0bc2a72](https://github.com/arxdeus/modulisto/commit/0bc2a72837d0292e38375fc432c52503fe1c19f9))
--  [**BREAKING CHANGE**]mutation context - ([5359780](https://github.com/arxdeus/modulisto/commit/5359780898ecd0d5dc580a9ad4306322f98b5fe8))
+-  [**BREAKING CHANGE**] operation - ([0bc2a72](https://github.com/arxdeus/modulisto/commit/0bc2a72837d0292e38375fc432c52503fe1c19f9))
+-  [**BREAKING CHANGE**] mutation context - ([5359780](https://github.com/arxdeus/modulisto/commit/5359780898ecd0d5dc580a9ad4306322f98b5fe8))
 - mutator accepts only `Store` and it subtypes - ([c58ac9b](https://github.com/arxdeus/modulisto/commit/c58ac9b17daa7ac8573df5ac99a95b8d18c28e55))
 - `MapValueUnitView` maps new value lazily - ([87ab905](https://github.com/arxdeus/modulisto/commit/87ab905742fff89f2fccc732086ef473dd136b23))
 
