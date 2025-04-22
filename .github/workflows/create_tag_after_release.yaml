@@ -57,7 +57,7 @@ jobs:
         id: create-release
         shell: bash
         env:
-          GH_TOKEN: ${{ github. }}
+          GH_TOKEN: ${{ secrets.PAT }}
         run: |
           gh release create ${{ steps.parse-meta.outputs.package-tag }} \
           -F RELEASE_CHANGELOG.md \
