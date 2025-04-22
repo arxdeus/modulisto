@@ -25,14 +25,14 @@ body = """
     {% for commit in commits
     | filter(attribute="scope")
     | sort(attribute="scope") %}
-        - **({{commit.scope}})**{% if commit.breaking %} [**BREAKING CHANGE**]{% endif %} \
+        - **({{commit.scope}})**{% if commit.breaking %} [**BREAKING CHANGE**] {% endif %} \
             {{ commit.message }} - ([{{ commit.id | truncate(length=7, end="") }}]($REPO/commit/{{ commit.id }}))
     {%- endfor -%}
     {% raw %}\n{% endraw %}\
     {%- for commit in commits %}
         {%- if commit.scope -%}
         {% else -%}
-            - {% if commit.breaking %} [**BREAKING CHANGE**]{% endif %}\
+            - {% if commit.breaking %} [**BREAKING CHANGE**] {% endif %}\
                 {{ commit.message }} - ([{{ commit.id | truncate(length=7, end="") }}]($REPO/commit/{{ commit.id }}))
         {% endif -%}
     {% endfor -%}
