@@ -1,7 +1,7 @@
 # Changelog
 
 ---
-## [3.0.0](https://github.com/arxdeus/modulisto/compare/modulisto-v2.4.0..3.0.0) - 2025-04-22
+## [3.0.0](https://github.com/arxdeus/modulisto/compare/modulisto-v2.4.0..3.0.0)
 
 ### Bug Fixes
 
@@ -36,7 +36,7 @@
 - refactor tests after applying new analyzer rules - ([61d4bec](https://github.com/arxdeus/modulisto/commit/61d4becd30fa3e0095bed0e531748e5fb5db23a5))
 
 ---
-## [2.4.0](https://github.com/arxdeus/modulisto/compare/modulisto-v2.3.0..2.4.0) - 2025-03-16
+## [2.4.0](https://github.com/arxdeus/modulisto/compare/modulisto-v2.3.0..2.4.0)
 
 ### Bug Fixes
 
