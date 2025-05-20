@@ -4,8 +4,6 @@ import 'package:meta/meta.dart';
 import 'package:modulisto/src/adapter/stream/subject.dart';
 import 'package:modulisto/src/interfaces.dart';
 
-
-
 /// Converts [UnitAdapter<ValueUnit<T>>] to a stream of values
 extension ValueUnitUnitToStreamAdapter<T> on UnitAdapter<ValueUnit<T>> {
   /// Tracks linked controllers for each unit to manage lifecycle
