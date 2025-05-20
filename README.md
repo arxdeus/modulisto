@@ -1,7 +1,6 @@
 # Modulisto
-[![Codecheck](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml/badge.svg)](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml)
-[![Publish](https://github.com/arxdeus/modulisto/actions/workflows/dry_publish.yaml/badge.svg)](https://github.com/arxdeus/modulisto/actions/workflows/dry_publish.yaml)
-
+[![Codecheck](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml/badge.svg?branch=main)](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml)
+[![Dependabot Updates](https://github.com/arxdeus/modulisto/actions/workflows/dependabot/dependabot-updates/badge.svg?branch=main)](https://github.com/arxdeus/modulisto/actions/workflows/dependabot/dependabot-updates)
 
 **`modulusto`**: [![modulisto](https://img.shields.io/pub/v/modulisto.svg)](https://pub.dev/packages/modulisto)
 
