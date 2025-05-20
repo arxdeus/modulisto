@@ -7,6 +7,7 @@ import 'package:modulisto/src/operation.dart';
 import 'package:modulisto/src/settings.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
+/// Extension on [PipelineRef] allows easy binding of operations (by function) to a pipeline for event handling and type safety.
 extension OperationLinkerPipelineExt on PipelineRef {
   OperationPipelineLinker<T> operationOnType<T>(Function operationId) => OperationPipelineLinker._(
         operationId,
@@ -14,6 +15,7 @@ extension OperationLinkerPipelineExt on PipelineRef {
       );
 }
 
+/// [OperationPipelineLinker] for binding `Operation`'s to `Pipeline`'
 class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T>, PipelineRefHost {
   final Function _sourceFunction;
 
@@ -30,12 +32,14 @@ class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T>, PipelineR
 
   @override
   void bind(FutureOr<void> Function(MutatorContext context, T value) handler) {
+    // Binds a handler to an operation, ensuring type safety and proper pipeline execution
     final callback = $pipelineRef.$handle(_sourceFunction, handler);
     final trigger = OperationRunner.$operationRunners[_sourceFunction] ??= Trigger<Object?>(
       $pipelineRef.$module,
       debugName: 'OperationTrigger(${identityHashCode(_sourceFunction).toRadixString(16)})',
     );
 
+    // Handles operation triggers by validating type and invoking the handler
     // ignore: cascade_invocations
     trigger.addListener((value) {
       if (ModulistoSettings.debugReportOperationTypeMismatch) {
@@ -44,10 +48,12 @@ class OperationPipelineLinker<T> implements PipelineLinker<Symbol, T>, PipelineR
           'Type mismatch on Operation(id: ${trigger.debugName}, source: $_sourceFunction), expected: $T, got: ${value.runtimeType} ',
         );
       }
+      // Ensures type safety before invoking the handler
       if (value.runtimeType != T) return;
       callback(value as T);
     });
 
+    // Cleans up by removing the trigger when the pipeline is disposed
     $pipelineRef.$disposeQueue.addLast(
       () => OperationRunner.$operationRunners.remove(_sourceFunction),
     );

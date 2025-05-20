@@ -12,7 +12,7 @@ final class RootModule extends Module implements RootInterface {
   RootModule();
 
   @override
-  Future<String> someString(String test) => Operation(someString, () async => test);
+  Future<String> someString(String test) => runAsOperation(someString, () async => test);
 }
 
 final class SignalModule extends Module implements TestInterface {
@@ -30,16 +30,23 @@ final class SignalModule extends Module implements TestInterface {
     mutate(mapState).setKeyValue(123, '');
   }
 
+  Stream<int> testStream() async* {
+    yield 1;
+    yield 2;
+    return;
+  }
+
   late final _syncPipeline = Pipeline.sync(this, ($) => $..unit(store).redirect(print));
 
   @override
-  Future<int> someNumber(int test) => Operation(someNumber, () async => test);
-  Future<int> someNumber2(int test2) => Operation(someNumber2, () async => test2);
+  Future<int> someNumber(int test) => runAsOperation(someNumber, () async => test);
+  Future<int> someNumber2(int test2) => runAsOperation(someNumber2, () async => test2);
 
   late final _pipeline = Pipeline.async(
     this,
     ($) => $
       ..unit(trigger).bind(_update)
+      ..stream(testStream()).redirect(print)
       ..operationOnType<String>(rootInterface.someString)
           .redirect((value) => print('from root interface: $value')),
     transformer: eventTransformers.sequental,

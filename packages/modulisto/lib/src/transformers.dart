@@ -1,3 +1,8 @@
+/// Provides event transformer utilities for pipelines in Modulisto.
+///
+/// Includes common event transformer strategies: sequential, droppable, concurrent, and restartable.
+library;
+
 // ignore_for_file: prefer_function_declarations_over_variables
 
 import 'dart:async';
@@ -5,12 +10,20 @@ import 'dart:async';
 import 'package:modulisto/modulisto.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+/// Sequential event transformer: processes events one after another.
 final EventTransformer _sequental = <A>(source, process) => source.asyncExpand(process);
+
+/// Droppable event transformer: drops new events while processing the current one.
 final EventTransformer _droppable =
     <A>(source, process) => source.transform(_ExhaustMapStreamTransformer<A>(process));
+
+/// Concurrent event transformer: processes all events concurrently.
 final EventTransformer _concurrent = <A>(source, process) => source.concurrentAsyncExpand(process);
+
+/// Restartable event transformer: cancels the current process and starts a new one for each event.
 final EventTransformer _restartable = <A>(source, process) => source.switchMap(process);
 
+/// Common event transformer strategies for pipelines.
 final eventTransformers = (
   sequental: _sequental,
   droppable: _droppable,

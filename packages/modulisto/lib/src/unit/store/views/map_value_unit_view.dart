@@ -1,18 +1,18 @@
 import 'package:meta/meta.dart';
 import 'package:modulisto/src/interfaces.dart';
-import 'package:modulisto/src/unit/store/store.dart';
 import 'package:modulisto/src/unit/store/value_unit_base.dart';
 
+/// Extension for mapping a [ValueUnit] to a [MapValueUnitView].
 extension MapStoreViewExt<T> on ValueUnit<T> {
+  /// Maps the value of this [ValueUnit] using the provided [mapper] and returns a [MapValueUnitView].
   MapValueUnitView<N, T> map<N>(ValueMapper<N, T> mapper) => MapValueUnitView._(this, mapper);
 }
 
-/// View of `parent` [Store] that listen for it updates and remaps `value` using `mapper` function
+/// View of a parent [ValueUnit] that listens for updates and remaps its value using a mapper function.
 ///
-/// Value maps lazily, that means that first read of updated [value] will execute `mapper` function and cache the result
-/// If the [value] of underlying (parent) [Store] was changed, then newcoming read will execute `mapper` again and cache value.
-/// No unneccessary mapper execution at all, only on first read of [.value]
+/// [value] maps lazily and caches the result until the parent value changes.
 final class MapValueUnitView<T, F> extends ValueUnitBase<T> {
+  /// Creates a [MapValueUnitView] with a parent [ValueUnit] and a [ValueMapper].
   MapValueUnitView._(
     this._parent,
     this._mapper, {
@@ -31,6 +31,7 @@ final class MapValueUnitView<T, F> extends ValueUnitBase<T> {
   late T _cachedValue;
   bool _isDirty = false;
 
+  /// The current mapped value, recalculated only when the parent value changes.
   @override
   T get value => switch (_isDirty) {
         false => _cachedValue,
@@ -40,6 +41,8 @@ final class MapValueUnitView<T, F> extends ValueUnitBase<T> {
   @override
   @internal
   @protected
+
+  /// Disposes the view and removes its listener from the parent.
   void dispose() {
     _parent.removeListener(_setCallback);
     super.dispose();

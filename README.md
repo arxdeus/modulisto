@@ -1,18 +1,96 @@
-# Modulisto
+# Modulisto Workspace
 
-[![Codecheck](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml/badge.svg?event=push)](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml)
+**Modulisto** is a modular, extensible state management and workflow library for Dart and Flutter.
 
-A advanced state management system that based on the concepts of `Trigger` and `Store`, which are handled by `Pipeline.sync` and `Pipeline.async`
+It provides a robust foundation for building scalable applications with complex state flows, supporting both synchronous and asynchronous event pipelines.
 
-# Quick Start
+---
 
-### 1. Create a module that `extends Module`
+## Table of Contents
+
+- [Overview](#overview)
+- [Packages](#packages)
+  - [modulisto](#modulisto)
+  - [modulisto_flutter](#modulisto_flutter)
+- [Getting Started](#getting-started)
+- [Example Usage](#example-usage)
+- [Architecture](#architecture)
+  - [Core Concepts](#core-concepts)
+    - [Unit](#unit)
+    - [Store](#store)
+    - [Trigger](#trigger)
+    - [Pipeline](#pipeline)
+- [Best Practices](#best-practices)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Overview
+
+Modulisto enables you to build modular applications by organizing logic into **Modules** that communicate via **Triggers**, manage state with **Stores**, and orchestrate workflows using **Pipelines**.
+
+The design is inspired by modern state management and event-driven architecture, making it suitable for both small and large-scale projects
+
+---
+
+## Packages
+
+### modulisto
+
+- **Description:** Advanced state management solution for Dart, supporting any number of event flows.
+- **Platforms:** Dart (cross-platform)
+- **Key Features:**
+  - Modular state and workflow management
+  - Reactive `Trigger<T>` and `Store<T>` system
+  - Synchronous and asynchronous `Pipeline`'s
+  - Observe functions using `Operation`
+
+### modulisto_flutter
+
+- **Description:** Flutter integration for Modulisto, providing adapters and widgets for seamless UI updates.
+- **Platforms:** Flutter (Android, iOS, Web, Desktop)
+- **Key Features:**
+  - `ModuleScope` for widget lifecycle management
+  - `StoreBuilder` for reactive UI updates
+  - Adapters for `ValueListenable` and `Listenable`
+
+---
+
+## Glossary
+
+- **`Module`:** Main building block for feature isolation that encapsulates `Store<T>`'s, `Trigger<T>`'s, and `Pipeline`'s.
+- **`Store<T>`:** Type-safe, observable state holder. Supports collections (`ListStore`, `MapStore`) and computed views.
+- **`Trigger<T>`:** Event dispatcher for actions, eliminating the need for custom event classes.
+- **`Pipeline`:** Workflow runner that chains operations in response to triggers or state changes. Supports both sync and async flows.
+- **`UnitAdapter`:** Bridge between `Unit`'s and external systems (e.g., streams, listenables).
+
+---
+
+## Getting Started
+
+### Installation
+
+Add the following to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  modulisto: ^3.0.0
+  modulisto_flutter: ^2.2.0 # For Flutter projects
+```
+
+### Basic Usage
+
+#### 1. **Create a module that extends Module**
+
 ```dart
 class SimpleCounter extends Module {
     ...
 }
 ```
-### 2. Declare in this module a `Trigger`s and `Stores` that you will use and link them using `Pipeline`
+
+#### 2. **Declare a Triggers and Stores and link them using Pipeline:**
+
 ```dart
   late final state = Store(this, 0);
 
@@ -39,7 +117,8 @@ class SimpleCounter extends Module {
   );
 ```
 
-### 3. Initialize module and create subscriptions with `Module.initialize` in constructor body
+#### 3.  **Initialize module using `Module.initialize`:**
+
 ```dart
 SimpleCounter(...) {
     Module.initialize(
@@ -52,7 +131,8 @@ SimpleCounter(...) {
 }
 ```
 
-### 4. Use newly created module in your project
+4. **Use in your code:**
+
 ```dart
 final counter = SimpleCounter(...);
 
@@ -62,69 +142,147 @@ counter.increment(); // 2
 counter.decrement() // 1
 ```
 
-# Entities
+or
 
-## `Unit`
+```dart
+final counter = CounterModule();
 
-An abstract, observable entity that encapsulates the relationship between modules and their ability to notify all dependants on this `Unit`
+Wigdet build(BuildContext context)
+  =>
+    StoreBuilder(
+      store: counter.state,
+      builder: (context, value) => Text('Count: $value'),
+    );
+```
 
-Any `Unit` can be converted into `Stream` via `UnitAdapter`, so it can be provided in third-party solutions without any additional steps
+---
 
-## `Store<T>`
+## Example
 
-A subtype of the `Unit` that represents a holder/storage/container for `T` value
+### Simple Counter Example
 
-## `*StoreView<T>`
+```dart
+final class TestModule extends Module {
+  late final increment = Trigger<()>(this, debugName: 'increment');
+  late final state = Store(this, 0, debugName: 'state');
+  late final counterPipeline = Pipeline.async(
+    this,
+    debugName: 'counterPipeline',
+    ($) => $
+      ..unit(increment).bind((mutate, _) => mutate(state).patch((value) => value + 1)),
+    transformer: eventTransformers.sequental,
+  );
 
-Immutable view of `Store<T>` that discards possibility of updates
+  TestModule() {
+    Module.initialize(this, attach: { counterPipeline });
+  }
+}
 
-`StoreView`'s may sounds like `computed`, since it can listen source (parent) `Store` and mutate inner value
+void main() {
+  final module = TestModule();
+  module.increment();
+}
+```
 
-At the moment there's exists only two subtypes of `StoreView`: `Store` (itself), `MappedStoreView<T, F>`
+See more in [`example/bin/`](example/bin/).
 
+---
 
-### MappedStoreView<T, F>
+## Architecture
 
-You can get it by `.map` onto existing `Store<T>`
+### Data Flow
 
-Allows you to listen parent `Store` and map all newcoming values with special `mapper` function
+The data flow in `Modulisto` is as follows:
 
-Value maps lazily, that means that first read of updated value will execute `mapper` function and cache the result. If the value was changed, then newcoming read will execute `mapper` again and cache value. No unneccessary `mapper` execution at all, only on first read of `.value`
-
-## `Trigger<T>`
-
-A subtype of the `Unit` that represents a unary (synchronous) call.
-
-When the `.call` method is invoked (with the appropriate payload of type `T`), it notifies all `Unit` listeners with new value
-
-`Trigger`'s eliminates the need to create custom `Event` classes, as is done in the `bloc`.
-
-
-## `Pipeline`
-
-`Modulisto` uses two ways of using `Pipeline`'s, each one can be created using the appropriate factory provided by `Pipeline`:
-1. Synchronous pipeline - `Pipeline.sync`
-2. Asynchronous pipeline - `Pipeline.async`
-
-### `Pipeline.sync`
-
-Used to subscribe `Unit`s or `Stream`s to synchronous callbacks that doesn't returns anything (`void`)
-
-Under the hood, `Pipeline.sync` does not utilize any form of pipelining, so each callback is executed synchronously as reaction to the `Unit`
-
-Can be used for debugging purposes or cross-invokation other `Trigger`'s
-
-### `Pipeline.async`
-
-Used to subscribe to `Unit`s or `Stream`s and reacts to it in `.bind/.redirect` way
-
-Each such `Pipeline` passes through an internal `StreamController` (shared for all events in `Module`) and is processed according to the provided `transformer`
-
-Any `EventTransformer` used in a `bloc` or (delivered via `bloc_concurrency`) can be used here in the same manner
-
-__TL;DR__: `Pipeline.async` - _Grouped subscriptions to specific Stream's that allow us to use `PipelineContext`_
+| **Component**       | **Description**                          | **Flow**          |
+|---------------------|------------------------------------------|-------------------|
+| External Events/UI  | User or system events                    | → Triggers        |
+| Triggers            | Dispatch actions                         | → Pipelines       |
+| Pipelines           | Orchestrate logic                        | → Stores          |
+| Stores              | Hold and update state                    | → UI/Exports      |
+| UI/Exports          | React to state changes                   |                   |
 
 
+### Core Concepts
 
+### Unit
+**`Unit<T>`** - low-level abstraction that incapsulates reactivity under the hood
 
+**Key Features:**
+- Abstraction that you must know, but should not use directly (only for advanced users)
+- Represents any data-flow (from external, to external or bidirectional)
+- Can be marked with `debugName`
+
+### Trigger
+**`Trigger<T>`** - `Unit<T>` that dispatches events into pipelines
+
+**Key Features:**
+- User interaction main entrypoint
+- "button" that `trigger`'s `Pipeline` workflow
+
+**Example:**
+```dart
+final increment = Trigger<()>(module, debugName: 'increment');
+```
+
+### Store
+**`Store<T>`** - `Unit<T>` that manages typed state with support for collections and reactive updates
+
+**Key Features:**
+- Type-safe container for value
+- Can be modified with `MutatorContext`
+- Built-in collection support (`ListStore`, `MapStore`)
+- Reactive value propagation
+
+**Example:**
+```dart
+late final counter = Store<int>(
+  module,
+  initialState: 0,
+  debugName: 'Counter',
+);
+```
+
+### Pipeline
+**`Pipeline`** orchestrates **`Module`** workflows, allows to `bind` many listenable/observable objects in your workflow
+
+**Key Features:**
+- Modular operation chaining
+- Can transform flow via `.async` factory
+
+**Example:**
+```dart
+final pipeline = Pipeline.async(
+  module,
+  ($) => $
+    ..unit(increment).bind((mutate, _) => mutate(counter).patch((v) => v + 1)),
+);
+```
+
+---
+
+## Best Practices
+
+- Always use generics for `Trigger<T>` and `Store<T>` (and their descendants) for type safety.
+- Always provide `debugName` for easier debugging and tracing.
+- Separate frequently changing parameters of state model into `Store<T>`'s
+- Use `ModuleScope` in Flutter to bound lifecycle of modules to `Widget` lifecycle
+
+---
+
+## Contributing
+
+Contributions are welcome! Open issues or pull requests on [GitHub](https://github.com/arxdeus/modulisto).
+
+Please, ensure that your Pull Request's code matches `analysis_options.yaml` ruleset
+
+Don't forget to star this repository, thank you for your support!
+
+---
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+---
 

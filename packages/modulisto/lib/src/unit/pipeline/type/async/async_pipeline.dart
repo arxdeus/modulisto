@@ -14,6 +14,7 @@ abstract class AsyncPipelineRef with PipelineRef implements Pipeline {}
 
 @internal
 final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, IntentHandler {
+  /// Creates an [AsyncPipeline] with the given module, register callback, and optional debug name.
   AsyncPipeline(
     super.module,
     this.pipelineRegister, {
@@ -24,11 +25,15 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   final void Function(PipelineRef pipeline) pipelineRegister;
   final EventTransformer _transformer;
 
+  /// List of pending event futures for this pipeline.
   late final List<Future<void>> _pendingEvents = [];
+
+  /// The dispose queue for this pipeline.
   @override
   @internal
   late final Queue<void Function()> $disposeQueue = Queue();
 
+  /// The stream of raw async pipeline intents for this pipeline.
   late final Stream<RawAsyncPipelineIntent> _intentStream = _transformer(
     $module.$intentStream
         .whereType<RawAsyncPipelineIntent>()
@@ -39,6 +44,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
   bool _isClosed = false;
   StreamSubscription<void>? _sub;
 
+  /// Attaches the pipeline to the module and registers it.
   @override
   @protected
   void attachToModule(ModuleBase module) {
@@ -47,6 +53,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
     module.$disposeQueue.addFirst(dispose);
   }
 
+  /// Handles events asynchronously using an [AsyncPipelineContext].
   @override
   void Function(T value) $handle<T>(
     Object? intentSource,
@@ -72,6 +79,7 @@ final class AsyncPipeline extends PipelineUnit implements AsyncPipelineRef, Inte
     return intentCallback;
   }
 
+  /// Disposes the pipeline and its resources.
   @override
   @mustCallSuper
   Future<void> dispose() async {

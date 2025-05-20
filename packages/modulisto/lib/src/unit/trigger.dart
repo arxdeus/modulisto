@@ -3,6 +3,7 @@ import 'package:modulisto/src/unit/unit.dart';
 
 const _nothingValue = ();
 
+/// Extensions provide convenient call methods for triggers with or without payloads.
 extension TriggerVoidCallExt on Trigger<()> {
   /// Invokes a trigger with empty payload
   void call() => notifyUpdate(_nothingValue);
@@ -23,6 +24,7 @@ final class Trigger<T> extends ModuleBindedUnitBase<T> {
     super.debugName,
   });
 
+  /// Notifies all listeners with the given payload, unless disposed.
   @override
   @internal
   @protected

@@ -2,11 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:modulisto/modulisto.dart';
 import 'package:modulisto_flutter/src/value_listenable_adapter.dart';
 
-/// {@template store_builder}
-/// StoreBuilder widget.
-/// {@endtemplate}
+/// A Flutter widget that rebuilds when the given [ValueUnit] changes.
 class StoreBuilder<T> extends StatefulWidget {
-  /// {@macro store_builder}
+  /// Creates a [StoreBuilder] for the given [ValueUnit] and builder function.
   const StoreBuilder({
     required this.unit,
     required this.builder,
@@ -14,7 +12,10 @@ class StoreBuilder<T> extends StatefulWidget {
     super.key, // ignore: unused_element
   });
 
+  /// The [ValueUnit] to listen for changes.
   final ValueUnit<T> unit;
+
+  /// The builder function that is called with the current value.
   final ValueWidgetBuilder<T> builder;
 
   /// The widget below this widget in the tree.
@@ -24,7 +25,7 @@ class StoreBuilder<T> extends StatefulWidget {
   State<StoreBuilder<T>> createState() => _StoreBuilderState<T>();
 }
 
-/// State for widget StoreBuilder.
+/// State for [StoreBuilder].
 class _StoreBuilderState<T> extends State<StoreBuilder<T>> {
   @protected
   late ValueListenableAdapter<T> _listenable = ValueListenableAdapter(widget.unit);

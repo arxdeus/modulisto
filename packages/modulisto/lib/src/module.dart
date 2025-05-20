@@ -7,7 +7,11 @@ import 'package:modulisto/src/internal.dart';
 import 'package:modulisto/src/operation.dart';
 import 'package:modulisto/src/unit/trigger.dart';
 
+/// Base class for modules
+///
+/// Handles lifecycle, intent management, and attachment of units and pipelines.
 abstract base class Module extends ModuleBase with OperationRunner implements Disposable, Named {
+  /// Initializes the [Module] with a set of [Attachable]s and a [debugName].
   static void initialize(
     Module module, {
     required Set<Attachable> attach,
@@ -34,11 +38,13 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
     dispose: Trigger<()>(this),
   );
 
+  /// The lifecycle triggers for this module.
   @nonVirtual
   ModuleLifecycle get lifecycle => _lifecycle;
 
   final StreamController<RawUnitIntent> _intentController = StreamController.broadcast();
 
+  /// Disposes the module, its units, and intent stream.
   @override
   @mustCallSuper
   Future<void> dispose() async {
@@ -51,6 +57,7 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
     await _intentController.close();
   }
 
+  /// Adds an intent to the module's intent stream.
   @override
   @internal
   @protected
@@ -60,14 +67,17 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
     _intentController.add(intent);
   }
 
+  /// The stream of raw unit intents for this module.
   @override
   @internal
   Stream<RawUnitIntent> get $intentStream => _intentController.stream;
 
+  /// Whether the module is closed.
   @override
   @nonVirtual
   bool get isClosed => _isClosed;
 
+  /// The debug name for this module.
   @override
   @protected
   @nonVirtual
@@ -77,6 +87,7 @@ abstract base class Module extends ModuleBase with OperationRunner implements Di
   String toString() =>
       'Module(runtimeType: $runtimeType, debugName: $debugName, isClosed: $isClosed)';
 
+  /// Attaches an [Attachable] to the module.
   @override
   @protected
   @nonVirtual
