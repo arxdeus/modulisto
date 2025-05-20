@@ -1,4 +1,14 @@
-# Modulisto Workspace
+# Modulisto
+[![Codecheck](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml/badge.svg)](https://github.com/arxdeus/modulisto/actions/workflows/code_check.yaml)
+[![Publish](https://github.com/arxdeus/modulisto/actions/workflows/dry_publish.yaml/badge.svg)](https://github.com/arxdeus/modulisto/actions/workflows/dry_publish.yaml)
+
+
+**`modulusto`**: [![modulisto](https://img.shields.io/pub/v/modulisto.svg)](https://pub.dev/packages/modulisto)
+
+
+**`modulisto_flutter`**: [![modulisto_flutter](https://img.shields.io/pub/v/modulisto_flutter.svg)](https://pub.dev/packages/modulisto_flutter)
+
+
 
 **Modulisto** is a modular, extensible state management and workflow library for Dart and Flutter.
 
