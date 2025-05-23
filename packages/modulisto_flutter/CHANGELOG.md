@@ -1,3 +1,12 @@
+# Changelog
+
+---
+## [3.0.0]
+
+### Features
+
+- documentation - ([d5de373](https://github.com/arxdeus/modulisto/commit/d5de373f0b4c3f95e2e7fa849df94e9eb48561c6))
+
 ## 2.2.0
 
 * bump: sync with `modulisto: 2.2.0`

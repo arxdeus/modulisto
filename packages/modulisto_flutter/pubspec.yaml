@@ -1,6 +1,6 @@
 name: modulisto_flutter
 description: An advanced state management solution with any number of event flows
-version: 2.2.0
+version: 3.0.0
 resolution: workspace
 homepage: https://github.com/kitsuniru/modulisto
 repository: https://github.com/kitsuniru/modulisto
