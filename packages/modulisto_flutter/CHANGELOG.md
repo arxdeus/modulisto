@@ -1,3 +1,10 @@
+# Changelog
+
+---
+## 3.0.0
+
+* bump: sync with `modulisto: 3.0.0`
+
 ## 2.2.0
 
 * bump: sync with `modulisto: 2.2.0`
