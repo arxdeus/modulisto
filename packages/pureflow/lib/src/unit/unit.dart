@@ -1,0 +1,32 @@
+import 'dart:async';
+
+import 'package:meta/meta.dart';
+import 'package:pureflow/src/core/sync_stream.dart';
+import 'package:pureflow/src/interfaces.dart';
+import 'package:pureflow/src/internal.dart';
+
+abstract class UnitBase<T> with Stream<T> implements Unit<T> {
+  final ModuleBase module;
+  @override
+  final String? debugName;
+
+  @internal
+  @nonVirtual
+  final SyncStreamController<T> $controller = SyncStreamController();
+
+  UnitBase(
+    this.module, {
+    this.debugName,
+  });
+
+  @override
+  StreamSubscription<T> listen(
+    void Function(T event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) =>
+      $controller.stream.listen(
+        onData,
+      );
+}

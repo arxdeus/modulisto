@@ -7,6 +7,7 @@ workspace:
   - example
   - packages/modulisto
   - packages/modulisto_flutter
+  - packages/pureflow
 
 dependencies:
   meta: ^1.15.0

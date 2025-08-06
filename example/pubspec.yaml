@@ -9,4 +9,5 @@ environment:
 
 dependencies:
   modulisto: ^3.0.0
+  pureflow: ^0.0.1
 
