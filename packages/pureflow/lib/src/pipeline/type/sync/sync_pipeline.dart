@@ -18,7 +18,6 @@ final class SyncPipeline extends PipelineUnit
     implements SyncPipelineRef, IntentHandler {
   /// Creates a [SyncPipeline] with the given module, register callback, and optional debug name.
   SyncPipeline(
-    super.module,
     this.pipelineRegister, {
     super.debugName,
   });
@@ -39,6 +38,7 @@ final class SyncPipeline extends PipelineUnit
   @override
   @protected
   void attachToModule(ModuleBase module) {
+    this.module = module;
     pipelineRegister(this);
     module.$disposeQueue.addLast(dispose);
   }
@@ -59,4 +59,10 @@ final class SyncPipeline extends PipelineUnit
 
   @override
   String toString() => 'SyncPipeline(debugName: $debugName, module: ${module})';
+
+  @override
+  @protected
+  @internal
+  @nonVirtual
+  ModuleBase? module;
 }

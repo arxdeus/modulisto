@@ -9,7 +9,6 @@ extension MutateListStore<T> on Mutator<ListStore<T>> {
 
 class ListStore<T> extends UnitBase<List<T>> implements Mutable {
   ListStore(
-    super.module,
     this._value, {
     super.debugName,
   });

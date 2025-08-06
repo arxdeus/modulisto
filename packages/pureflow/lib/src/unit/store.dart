@@ -9,7 +9,6 @@ extension MutateStore<T> on Mutator<Store<T>> {
 
 class Store<T> extends UnitBase<T> implements Mutable {
   Store(
-    super.module,
     this._value, {
     super.debugName,
   });

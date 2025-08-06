@@ -37,7 +37,6 @@ class OperationPipelineLinker<T>
     final callback = $pipelineRef.$handle(_sourceFunction, handler);
     final trigger =
         OperationRunner.$operationRunners[_sourceFunction] ??= Trigger<Object?>(
-      $pipelineRef.module,
       debugName:
           'OperationTrigger(${identityHashCode(_sourceFunction).toRadixString(16)})',
     );

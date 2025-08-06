@@ -1,7 +1,11 @@
 import 'package:pureflow/src/unit/unit.dart';
 
-extension TriggerVoidExt on Trigger<Null> {
+extension TriggerNullExt on Trigger<Null> {
   void call() => $controller.add(null);
+}
+
+extension TriggerVoidExt on Trigger<()> {
+  void call() => $controller.add(());
 }
 
 extension TriggerExt<T> on Trigger<T> {
@@ -9,8 +13,7 @@ extension TriggerExt<T> on Trigger<T> {
 }
 
 class Trigger<T> extends UnitBase<T> {
-  Trigger(
-    super.module, {
+  Trigger({
     super.debugName,
   });
 }

@@ -12,8 +12,7 @@ typedef PipelineRegisterCallback = void Function(PipelineRef on);
 abstract base class PipelineUnit extends UnitBase<Object?>
     implements Pipeline, Disposable {
   /// Creates a [PipelineUnit] with a module and optional debug name.
-  PipelineUnit(
-    super.module, {
+  PipelineUnit({
     super.debugName,
   });
 }
@@ -23,7 +22,6 @@ abstract base class PipelineUnit extends UnitBase<Object?>
 abstract class Pipeline implements Attachable {
   /// Pipeline that handles incoming events synchronously, without any queuing mechanism
   factory Pipeline.sync(
-    ModuleBase module,
     PipelineRegisterCallback pipelineRegister, {
     String? debugName,
   }) = SyncPipeline;
@@ -31,7 +29,6 @@ abstract class Pipeline implements Attachable {
   /// Pipeline that transforms incoming events using [transformer]
   /// and allows to create complex event queue
   factory Pipeline.async(
-    ModuleBase module,
     PipelineRegisterCallback pipelineRegister, {
     EventTransformer? transformer,
     String? debugName,

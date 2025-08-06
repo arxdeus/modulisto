@@ -17,7 +17,6 @@ final class AsyncPipeline extends PipelineUnit
     implements AsyncPipelineRef, IntentHandler {
   /// Creates an [AsyncPipeline] with the given module, register callback, and optional debug name.
   AsyncPipeline(
-    super.module,
     this.pipelineRegister, {
     super.debugName,
     EventTransformer? transformer,
@@ -26,6 +25,12 @@ final class AsyncPipeline extends PipelineUnit
 
   final void Function(PipelineRef pipeline) pipelineRegister;
   final EventTransformer _transformer;
+
+  @override
+  @protected
+  @internal
+  @nonVirtual
+  ModuleBase? module;
 
   /// List of pending event futures for this pipeline.
   late final List<Future<void>> _pendingEvents = [];
@@ -37,9 +42,10 @@ final class AsyncPipeline extends PipelineUnit
 
   /// The stream of raw async pipeline intents for this pipeline.
   late final Stream<RawAsyncPipelineIntent> _intentStream = _transformer(
-    module.$intentStream
-        .whereType<RawAsyncPipelineIntent>()
-        .where((intent) => intent.source == this),
+    module?.$intentStream
+            .whereType<RawAsyncPipelineIntent>()
+            .where((intent) => intent.source == this) ??
+        Stream.empty(),
     _handleAsyncIntent,
   );
 
@@ -50,6 +56,7 @@ final class AsyncPipeline extends PipelineUnit
   @override
   @protected
   void attachToModule(ModuleBase module) {
+    this.module = module;
     pipelineRegister(this);
     _sub = _intentStream.listen(null);
     module.$disposeQueue.addFirst(dispose);
@@ -63,7 +70,7 @@ final class AsyncPipeline extends PipelineUnit
   ) {
     void intentCallback(T value) {
       if (_isClosed) return;
-      if (module.isClosed) return;
+      if (module?.isClosed ?? true) return;
 
       final context = AsyncPipelineContext();
       final intent = RawAsyncPipelineIntent(
@@ -76,7 +83,7 @@ final class AsyncPipeline extends PipelineUnit
       );
 
       _pendingEvents.add(context.future);
-      module.$addIntent(intent);
+      module?.$addIntent(intent);
     }
 
     return intentCallback;

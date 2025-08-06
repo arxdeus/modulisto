@@ -6,7 +6,6 @@ import 'package:pureflow/src/interfaces.dart';
 import 'package:pureflow/src/internal.dart';
 
 abstract class UnitBase<T> with Stream<T> implements Unit<T> {
-  final ModuleBase module;
   @override
   final String? debugName;
 
@@ -14,8 +13,7 @@ abstract class UnitBase<T> with Stream<T> implements Unit<T> {
   @nonVirtual
   final SyncStreamController<T> $controller = SyncStreamController();
 
-  UnitBase(
-    this.module, {
+  UnitBase({
     this.debugName,
   });
 

@@ -35,8 +35,8 @@ abstract base class Module extends ModuleBase implements Disposable, Named {
   @visibleForTesting
   late final Queue<FutureOr<void> Function()> $disposeQueue = Queue();
   late final _lifecycle = (
-    init: Trigger<Null>(this),
-    dispose: Trigger<Null>(this),
+    init: Trigger<Null>(),
+    dispose: Trigger<Null>(),
   );
 
   /// The lifecycle triggers for this module.

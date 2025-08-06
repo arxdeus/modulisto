@@ -19,16 +19,26 @@ void main() {
 }
 
 final class DummyModule extends Module {
-  late final increment = Trigger<Null>(this);
-  late final decrement = Trigger<Null>(this);
+  final increment = Trigger<Null>();
+  final decrement = Trigger<Null>();
 
-  late final state = Store<int>(this, 0);
+  final state = Store<int>(0);
 
   void _updateCounter(MutatorContext mutate, int value) =>
       mutate(state).set(state.value + value);
 
   late final _pipeline = Pipeline.sync(
-    this,
+    (on) => on
+      ..stream(state).redirect(print)
+      ..stream(increment).bind(
+        (context, value) => _updateCounter(context, 1),
+      )
+      ..stream(decrement).bind(
+        (context, value) => _updateCounter(context, -1),
+      ),
+  );
+
+  late final _pipeline2 = Pipeline.sync(
     (on) => on
       ..stream(state).redirect(print)
       ..stream(increment).bind(
@@ -41,7 +51,7 @@ final class DummyModule extends Module {
 
   DummyModule() {
     run(
-      attach: {_pipeline},
+      attach: {_pipeline, _pipeline2},
     );
   }
 }

@@ -64,7 +64,7 @@ abstract class IntentHandler {
 abstract class ModuleChild {
   /// The module reference for the module child.
   @internal
-  ModuleBase get module;
+  ModuleBase? module;
 }
 
 /// An abstract class representing an updatable object with an update method.
@@ -94,7 +94,7 @@ mixin PipelineRef implements ModuleChild, IntentHandler, DisposeQueue {
   /// The module reference for the pipeline ref.
   @override
   @internal
-  ModuleBase get module;
+  ModuleBase? module;
 
   /// The dispose queue for the pipeline ref.
   @override
