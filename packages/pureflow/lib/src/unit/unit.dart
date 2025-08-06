@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:pureflow/src/core/sync_stream.dart';
 import 'package:pureflow/src/interfaces.dart';
-import 'package:pureflow/src/internal.dart';
 
 abstract class UnitBase<T> with Stream<T> implements Unit<T> {
   @override
